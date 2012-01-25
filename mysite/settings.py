@@ -8,7 +8,6 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('VI','vi@avisosms.ru')
-    # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -66,17 +65,14 @@ STATIC_ROOT = path.join(path.dirname(__file__),'../static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-#STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-#ADMIN_MEDIA_PREFIX = '/static/admin/'
 ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    #path.join(path.dirname(__file__),'static'),
     '/usr/local/lib/python2.7/dist-packages/admin_tools/media/admin_tools',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
@@ -88,7 +84,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -98,7 +93,6 @@ SECRET_KEY = 'd!=pv)#=q7f0qquuw93appsp(h9drrfp_1!#=0047=32m2*ug9'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,9 +119,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
 
-    # django 1.2 only
-    #'django.contrib.messages.context_processors.messages',
-
     # required by django-admin-tools
     'django.core.context_processors.request',
 )
@@ -147,10 +138,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
+
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
 
     'djcelery',
 
@@ -181,7 +170,6 @@ LOGGING = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_FILE_PATH = path.join(path.dirname(__file__),'mail')
 
 EMAIL_HOST = 'mail.bz8.ru'
 EMAIL_HOST_PASSWORD = 'lhmKpR1Kwt0'

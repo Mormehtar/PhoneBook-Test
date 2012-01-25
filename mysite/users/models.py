@@ -58,24 +58,6 @@ class UserProfile(User):
         return u'%s %s %s в %s' % (self.first_name, self.last_name,
                                    self.position.name, self.department.name)
 
-#    def __new__(cls, *args, **kwargs):
-#        return super(UserProfile, cls).__new__(*args, **kwargs)
-#
-#    def __new__(cls, name, bases, attrs):
-#        instance = super(UserProfile, cls).__new__(name, bases, attrs)
-#
-#        instance._meta.get_field_by_name('first_name')[0].blank = False
-#        instance._meta.get_field_by_name('first_name')[0].null = False
-#
-#        instance._meta.get_field_by_name('last_name')[0].blank = False
-#        instance._meta.get_field_by_name('last_name')[0].null = False
-#
-#        instance._meta.get_field_by_name('email')[0].blank = False
-#        instance._meta.get_field_by_name('email')[0].null = False
-#
-#        return instance
-
-
 
     def __init__(self, *args, **kwargs):
         super(UserProfile, self).__init__(*args, **kwargs)

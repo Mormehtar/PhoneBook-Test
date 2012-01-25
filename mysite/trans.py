@@ -6,20 +6,6 @@ from django.utils.text import capfirst
 from django.db.models.base import ModelBase
 from django.conf import settings
 
-#from django import template
-#from django.conf import settings
-#from pymorphy import get_morph
-
-#morph = get_morph(settings.PYMORPHY_DICTS['ru']['dir'])
-
-#register = template.Library()
-#
-#@register.filter
-#def plural_from_object(source, object):
-#    l = len(object[0])
-#    if 1 == l:
-#        return source
-#    return morph.pluralize_inflected_ru(source.upper(), l).lower()
 
 class I18nLabel():
     def __init__(self, function):
@@ -76,52 +62,3 @@ class I18nLabel():
 
     def index(self):
         return self.wrapper_app_index
-
-
-#def message_wrapper(f):
-#    def wrapper(self, request, message):
-#        gram_info = morph.get_graminfo( self.model._meta.verbose_name.upper() )[0]
-#        if -1 != message.find(u'"'):
-#            """
-#            Message about some action with a single element
-#            """
-#            words = [w for w in re.split("( |\\\".*?\\\".*?)", message) if w.strip()]
-#            form = gram_info['info'][:gram_info['info'].find(',')]
-#            message = u' '.join(words[:2])
-#            for word in words[2:]:
-#                if not word.isdigit():
-#                    word = word.replace(".", "").upper()
-#                    try:
-#                        info = morph.get_graminfo(word)[0]
-#                        if u'КР_ПРИЛ' != info['class']:
-#                            word = morph.inflect_ru(word, form).lower()
-#                        elif 0 <= info['info'].find(u'мр'):
-#                            word = morph.inflect_ru(word, form, u'КР_ПРИЧАСТИЕ').lower()
-#                        else:
-#                            word = word.lower()
-#                    except IndexError:
-#                        word = word.lower()
-#                message += u' ' + word
-#        else:
-#            """
-#            Message about some action with a group of elements
-#            """
-#            num = int(re.search("\d", message).group(0))
-#            words = message.split(u' ')
-#            message = words[0]
-#            pos = gram_info['info'].find(',')
-#            form = gram_info['info'][:pos] + u',' + u'ед' if 1 == num else u'мн'
-#            for word in words[1:]:
-#                if not word.isdigit():
-#                    word = word.replace(".", "").upper()
-#                    info = morph.get_graminfo(word)[0]
-#                    if u'КР_ПРИЛ' != info['class']:
-#                        word = morph.pluralize_inflected_ru(word, num).lower()
-#                    else:
-#                        word = morph.inflect_ru(word, form, u'КР_ПРИЧАСТИЕ').lower()
-#                message += u' ' + word
-#
-#        message += '.'
-#        return f(self, request, capfirst(message))
-#    return wrapper
-  
