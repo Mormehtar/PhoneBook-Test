@@ -26,7 +26,7 @@ class CustomIndexDashboard(Dashboard):
 
         self.children.append(modules.AppList(
             _('Applications'),
-            exclude=('django.contrib.*','djcelery'),
+            exclude=('djcelery.*','django.contrib.*'),
         ))
 
         # append a recent actions module
