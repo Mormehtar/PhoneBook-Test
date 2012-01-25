@@ -174,12 +174,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.bz8.ru'
 EMAIL_HOST_PASSWORD = 'lhmKpR1Kwt0'
 EMAIL_HOST_USER = 'komkov_00'
+EMAIL_BASE = 'komkov@user.bz8.ru'
 
 ADMIN_TOOLS_MENU = 'mysite.menu.CustomMenu'
 ADMIN_TOOLS_INDEX_DASHBOARD = 'mysite.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'mysite.dashboard.CustomAppIndexDashboard'
 
 djcelery.setup_loader()
+
+CELERY_DISABLE_RATE_LIMITS = True
+CELERY_IGNORE_RESULT = True
 
 BROKER_HOST = "localhost"
 BROKER_PORT = 5672

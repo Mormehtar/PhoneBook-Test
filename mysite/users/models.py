@@ -62,10 +62,7 @@ class UserProfile(User):
     def __init__(self, *args, **kwargs):
         super(UserProfile, self).__init__(*args, **kwargs)
 
-        connection = pymongo.Connection()
-        db = connection.test_db
-        coll = db['madskillz']
-        temp_skills = coll.find_one({u'id':self.username})
+        temp_skills = pymongo.Connection().test_db['madskillz'].find_one({u'id':self.username})
         if temp_skills:
             self.skills = temp_skills[u'skills']
         else:
@@ -80,14 +77,14 @@ class UserProfile(User):
                           % {'username' : self.username, 'password' : password}
                 send_mail(_(u'Your password on mysite'),
                           message,
-                          'admin@admin.com',[self.email],
-                          fail_silently=False)
+                          settings.EMAIL_BASE,[self.email])
             else:
                 password = u''
             self.set_password(password)
         super(UserProfile, self).save(*args, **kwargs)
-        connection = pymongo.Connection()
-        db = connection.test_db
-        coll = db['madskillz']
-        coll.find_and_modify(query={u'id':self.username}, upsert=True, update={'$set' : {u'skills' : self.skills}})
+        pymongo.Connection().test_db['madskillz'].find_and_modify(
+            query={u'id':self.username},
+            upsert=True,
+            update={'$set' : {u'skills' : self.skills}}
+        )
         connection.end_request()

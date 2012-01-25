@@ -18,11 +18,11 @@ class UserProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
-        self.initial[u'skills'] = u',\n'.join(self.instance.skills)
+        self.initial[u'skills'] = u'\n'.join(self.instance.skills)
 
 
     def save(self, *args, **kwargs):
-        skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u',')) if s!=u'']
+        skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
         self.instance.skills = skills
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
