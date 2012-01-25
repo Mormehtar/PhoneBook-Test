@@ -24,5 +24,17 @@ class UserProfileForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
         self.instance.skills = skills
+        ChangedData = self.changed_data
+        Message = _(u'The following data of User %(lastname)s %(firstname)s %(surname)s were changed:\n')\
+            % {instance.last_name, instance.first_name, instance.surname}
+        for DataName in ChangedData:
+            if not u'skills':
+                Message += Meta.model._meta.get_field_by_name(DataName).verbouse_name\
+                       + u': '\
+                       + Meta.model._meta.get_field_by_name(DataName)\
+                       + '\n'
+            else:
+                Message += self.skills.label+': '
+
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance

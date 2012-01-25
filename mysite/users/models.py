@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 import pymongo
 
 # Create your models here.
+from settings import EMAIL_BASE
 
 class Department(models.Model):
     name = models.CharField(max_length = 30, verbose_name=_(u'Name'))
@@ -61,12 +62,7 @@ class UserProfile(User):
 
     def __init__(self, *args, **kwargs):
         super(UserProfile, self).__init__(*args, **kwargs)
-
-        temp_skills = pymongo.Connection().test_db['madskillz'].find_one({u'id':self.username})
-        if temp_skills:
-            self.skills = temp_skills[u'skills']
-        else:
-            self.skills = []
+        self.skills = MongoRead(self.username)
 
 
     def save(self, *args, **kwargs):
@@ -77,14 +73,25 @@ class UserProfile(User):
                           % {'username' : self.username, 'password' : password}
                 send_mail(_(u'Your password on mysite'),
                           message,
-                          settings.EMAIL_BASE,[self.email])
+                          EMAIL_BASE,[self.email])
             else:
                 password = u''
             self.set_password(password)
         super(UserProfile, self).save(*args, **kwargs)
-        pymongo.Connection().test_db['madskillz'].find_and_modify(
-            query={u'id':self.username},
-            upsert=True,
-            update={'$set' : {u'skills' : self.skills}}
-        )
-        connection.end_request()
+        MongoWrite(self.username, self.skills)
+
+
+def MongoRead(name):
+    connection = pymongo.Connection()
+    temp_skills = connection.test_db['madskillz'].find_one({u'id':name})
+    connection.end_request()
+    if temp_skills:
+        return temp_skills[u'skills']
+    else:
+        return []
+
+def MongoWrite(name, skills):
+    connection = pymongo.Connection()
+    connection.test_db['madskillz'].find_and_modify(
+        query={u'id':name},upsert=True,update={'$set' : {u'skills' : skills}})
+    connection.end_request()
