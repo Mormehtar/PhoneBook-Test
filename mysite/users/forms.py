@@ -5,6 +5,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from mysite.users import models
+from mysite.users import tasks
 
 
 class UserProfileForm(forms.ModelForm):
@@ -24,25 +25,29 @@ class UserProfileForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
 
-        Message = MakeMessage(self)
-        ToList = models.GetListOfAdresses(Meta.model.PK)
-
+        Model = self.model
+        ChangedUserReference = models.FormReference(
+            Model.GetModelFieldByName('last_name'),
+            Model.GetModelFieldByName('first_name'),
+            Model.GetModelFieldByName('surname'),
+            Model.GetModelFieldByName('username'))
+        Message = MakeMessage(self, ChangedUserReference)
+        tasks.MakeSending.delay(
+            ConstMessagePart=Message,
+            ChangedUser=self.Meta.model.PK,
+            ChangedUserReference=ChangedUserReference)
         self.instance.skills = skills
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
-def MakeMessage(ChangedForm):
+def MakeMessage(ChangedForm, ChangedUser):
     ChangedData = ChangedForm.changed_data
-    Model = ChangedForm.model
-    Message = _(u'The following data of User %s') % Model.GetModelFieldByName('last_name').strip(string.whitespace) \
-        + u' %s' % Model.GetModelFieldByName('first_name').strip(string.whitespace) \
-        + u' %s' % Model.GetModelFieldByName('surname').strip(string.whitespace) \
-        + u' (%s) were changed:\n' % Model.GetModelFieldByName('username')
+    Message = _(u'the following data of User %s has been changed:\n') % (ChangedUser)
     for FieldName in ChangedData:
         if not u'skills':
-            Message += GetModelFieldChange(Model, FieldName)
+            Message += GetModelFieldChange(ChangedForm.model, FieldName)
         else:
             Message += GetSkillsChanges(self.instance.skills, skills, Message)
     return Message
