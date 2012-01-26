@@ -6,7 +6,7 @@ from django.contrib.auth import models as auth_models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
-from settings import EMAIL_BASE
+#from settings import EMAIL_BASE
 import pymongo
 
 import string
@@ -83,7 +83,7 @@ class UserProfile(User):
             message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s') \
                 % {'username': self.username, 'password': password}
             header = _(u'Your password on mysite')
-            send_mail(header, message, EMAIL_BASE, [self.myemail])
+            send_mail(header, message, u'dont@reply.ua', [self.myemail])
             self.set_password(password)
 
 
