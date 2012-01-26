@@ -25,12 +25,13 @@ class UserProfileForm(forms.ModelForm):
         skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
 
         Message = MakeMessage(self)
-        ToList = GetListOfAdresses(self)
+        ToList = models.GetListOfAdresses(Meta.model.PK)
 
         self.instance.skills = skills
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
+
 
 def MakeMessage(ChangedForm):
     ChangedData = ChangedForm.changed_data

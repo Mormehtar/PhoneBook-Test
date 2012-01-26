@@ -6,10 +6,12 @@ from django.contrib.auth import models as auth_models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
+from settings import EMAIL_BASE
 import pymongo
 
+import string
+
 # Create your models here.
-from settings import EMAIL_BASE
 
 class Department(models.Model):
     name = models.CharField(max_length = 30, verbose_name=_(u'Name'))
@@ -99,3 +101,28 @@ def MongoWrite(name, skills):
     connection.test_db['madskillz'].find_and_modify(
         query={u'id':name},upsert=True,update={'$set' : {u'skills' : skills}})
     connection.end_request()
+
+
+def GetListOfAddresses(PK):
+    Department = UserProfile.objects.get(pk=PK).department
+    Bosses = set(Departments.objects.all().head)
+    Colleagues = set(UserProfile.objects.filter(depatment=Department))
+    Addressants = Bosses + Colleagues
+    Result = set()
+    for Addressant in Addressants:
+        Element['email'] = Addressant.myemail
+        Element['person'] = FormReference(
+            Addressant.last_name,
+            Addressant.first_name,
+            Addressant.surname,
+            Addressant.username)
+        Result.add(Element)
+    return Result
+
+
+def FormReference(last_name,first_name,surname,username):
+    if len(last_name)+len(first_name)+len(surname)>0 :
+        reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
+    else:
+        reference = surname
+    return reference
