@@ -2,7 +2,7 @@ import string
 import pymongo
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from mysite.users import models
 from mysite.users import tasks
@@ -23,23 +23,41 @@ class UserProfileForm(forms.ModelForm):
 
 
     def save(self, *args, **kwargs):
-        skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
 
-        Model = self.model
-        ChangedUserReference = models.FormReference(
-            Model.GetModelFieldByName('last_name'),
-            Model.GetModelFieldByName('first_name'),
-            Model.GetModelFieldByName('surname'),
-            Model.GetModelFieldByName('username'))
-        Message = MakeMessage(self, ChangedUserReference)
-        tasks.MakeSending.delay(
-            ConstMessagePart=Message,
-            ChangedUser=self.Meta.model.PK,
-            ChangedUserReference=ChangedUserReference)
-        self.instance.skills = skills
+        self.SendNotifications()
+
+        self.instance.skills = ParcedSkills()
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
+
+
+    def ParcedSkills(self):
+        return [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
+
+    def SendNotifications(self):
+        ChangedUserReference = self.ChangedUserReference()
+        Message = MakeMessage(self, ChangedUserReference)
+        tasks.MakeSending.delay(
+            ConstMessagePart=Message,
+            ChangedUser=self.Meta.model.pk,
+            ChangedUserReference=ChangedUserReference)
+
+
+    def ChangedUserReference(self):
+        model = self.Meta.model
+        if self.is_bound:
+            return models.FormReference(
+                self.instance.last_name,
+                self.instance.first_name,
+                self.instance.surname,
+                self.instance.username)
+        else:
+            return models.FormReference(
+                model.GetModelFieldByName('last_name'),
+                model.GetModelFieldByName('first_name'),
+                model.GetModelFieldByName('surname'),
+                model.GetModelFieldByName('username'))
 
 
 def MakeMessage(ChangedForm, ChangedUser):
@@ -49,15 +67,15 @@ def MakeMessage(ChangedForm, ChangedUser):
         if not u'skills':
             Message += GetModelFieldChange(ChangedForm.model, FieldName)
         else:
-            Message += GetSkillsChanges(self.instance.skills, skills, Message)
+            Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills(), Message)
     return Message
 
 
 def GetSkillsChanges(SkillsBefore, SkillsAfter, Message):
     NewSkills = SkillsDifference(SkillsAfter, SkillsBefore)
     DeletedSkills = SkillsDifference(SkillsBefore, SkillsAfter)
-    Message = GetDeletedSkillsMessage(DeletedSkills, Message)
-    Message = GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter)
+    Message += GetDeletedSkillsMessage(DeletedSkills, Message)
+    Message += GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter)
     return Message
 
 
@@ -85,5 +103,5 @@ def SkillsDifference (skills1, skills2):
 
 
 def GetModelFieldChange(model, FieldName):
-    return u'\t' + GetModelFieldData(FieldName).verbouse_name + u': ' + GetModelFieldData(FieldName) + u'\n'
+    return u'\t' + model.GetModelFieldData(FieldName).verbouse_name + u': ' + model.GetModelFieldData(FieldName) + u'\n'
 

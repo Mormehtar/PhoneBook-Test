@@ -40,7 +40,7 @@ class Position(models.Model):
 
 
 class UserProfile(User):
-    surname = models.CharField(max_length = 30, verbose_name=_(u'Surname'))
+    surname = models.CharField(max_length = 30, blank='true', null='true', verbose_name=_(u'Surname'))
     mob_tel = models.DecimalField(
         max_digits=10, decimal_places=0,
         blank='true', null='true', verbose_name=_(u'Mobile telephone')
