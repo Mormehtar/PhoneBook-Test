@@ -26,7 +26,7 @@ class UserProfileForm(forms.ModelForm):
 
         self.SendNotifications()
 
-        self.instance.skills = ParcedSkills()
+        self.instance.skills = self.ParcedSkills()
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
@@ -38,9 +38,11 @@ class UserProfileForm(forms.ModelForm):
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()
         Message = MakeMessage(self, ChangedUserReference)
+
+#        tasks.MakeSending(
         tasks.MakeSending.delay(
             ConstMessagePart=Message,
-            ChangedUser=self.Meta.model.pk,
+            ChangedUser=self.instance.pk,
             ChangedUserReference=ChangedUserReference)
 
 
@@ -67,29 +69,31 @@ def MakeMessage(ChangedForm, ChangedUser):
         if not u'skills':
             Message += GetModelFieldChange(ChangedForm.model, FieldName)
         else:
-            Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills(), Message)
+            Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
     return Message
 
 
-def GetSkillsChanges(SkillsBefore, SkillsAfter, Message):
+def GetSkillsChanges(SkillsBefore, SkillsAfter):
     NewSkills = SkillsDifference(SkillsAfter, SkillsBefore)
     DeletedSkills = SkillsDifference(SkillsBefore, SkillsAfter)
-    Message += GetDeletedSkillsMessage(DeletedSkills, Message)
-    Message += GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter)
+    Message = GetDeletedSkillsMessage(DeletedSkills)
+    Message += GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter)
     return Message
 
 
-def GetDeletedSkillsMessage(DeletedSkills, Message):
+def GetDeletedSkillsMessage(DeletedSkills):
+    Message = u''
     if len(DeletedSkills) > 0:
-        Message += _(u'The following skills were deleted:\n')
+        Message = _(u'The following skills were deleted:\n')
         for Skill in DeletedSkills:
             Message += u'\t' + Skill + u'\n'
     return Message
 
 
-def GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter):
+def GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter):
+    Message = u''
     if len(NewSkills) > 0:
-        Message += _(u'Final list of skills is:\n')
+        Message = _(u'Final list of skills is:\n')
         for Skill in SkillsAfter:
             Message += u'\t' + Skill
             if Skill in NewSkills:

@@ -104,11 +104,15 @@ def MongoWrite(name, skills):
 
 
 def GetListOfAddresses(PK):
-    Department = UserProfile.objects.get(pk=PK).department
-    Bosses = set(Departments.objects.all().head)
-    Colleagues = set(UserProfile.objects.filter(depatment=Department))
-    Addressants = Bosses + Colleagues
-    Result = set()
+    UserDepartment = UserProfile.objects.get(pk=PK).department
+    Bosses = Department.objects.all()
+    BossNames = set()
+    for Boss in Bosses:
+        BossNames.add(Boss.head)
+    Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
+    Addressants = BossNames | Colleagues
+    Result = []
+    Element = {}
     for Addressant in Addressants:
         Element['email'] = Addressant.myemail
         Element['person'] = FormReference(
@@ -116,7 +120,8 @@ def GetListOfAddresses(PK):
             Addressant.first_name,
             Addressant.surname,
             Addressant.username)
-        Result.add(Element)
+        Result.append(Element)
+#    a=a
     return Result
 
 
