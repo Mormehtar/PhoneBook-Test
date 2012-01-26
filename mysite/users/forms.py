@@ -23,18 +23,65 @@ class UserProfileForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
+
+        Message = MakeMessage(self)
+
+
         self.instance.skills = skills
-        ChangedData = self.changed_data
-        Message = _(u'The following data of User %(lastname)s %(firstname)s %(surname)s were changed:\n')\
-            % {instance.last_name, instance.first_name, instance.surname}
-        for DataName in ChangedData:
-            if not u'skills':
-                Message += Meta.model._meta.get_field_by_name(DataName).verbouse_name\
-                       + u': '\
-                       + Meta.model._meta.get_field_by_name(DataName)\
-                       + '\n'
-            else:
-                Message += self.skills.label+': '
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
+
+def MakeMessage(ChangedForm):
+    ChangedData = ChangedForm.changed_data
+    Message = _(u'The following data of User %(lastname)s %(firstname)s %(surname)s (%(username)s) were changed:\n')\
+        % {u'lastname' : ChangedForm.model._meta.get_field_by_name('last_name'),
+           u'firstname' : ChangedForm.model._meta.get_field_by_name('first_name'),
+           u'surname' : ChangedForm.model._meta.get_field_by_name('surname'),
+           u'username' : ChangedForm.model._meta.get_field_by_name('username')}
+    for FieldName in ChangedData:
+        if not u'skills':
+            Message += GetModelFieldChange(Meta.model, FieldName)
+        else:
+            Message += GetSkillsChanges(self.instance.skills, skills, Message)
+    return Message
+
+
+def GetSkillsChanges(SkillsBefore, SkillsAfter, Message):
+    NewSkills = SkillsDifference(SkillsAfter, SkillsBefore)
+    DeletedSkills = SkillsDifference(SkillsBefore, SkillsAfter)
+    Message = GetDeletedSkillsMessage(DeletedSkills, Message)
+    Message = GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter)
+    return Message
+
+
+def GetDeletedSkillsMessage(DeletedSkills, Message):
+    if len(DeletedSkills) > 0:
+        Message += _(u'The following skills were deleted:\n')
+        for Skill in DeletedSkills:
+            Message += u'\t' + Skill + u'\n'
+    return Message
+
+
+def GetFinalSkillsMessageWithNew(Message, NewSkills, SkillsAfter):
+    if len(NewSkills) > 0:
+        Message += _(u'Final list of skills is:\n')
+        for Skill in SkillsAfter:
+            Message += u'\t' + Skill
+            if Skill in NewSkills:
+                Message += u' (added!)'
+        Message += u'\n'
+    return Message
+
+
+def SkillsDifference (skills1, skills2):
+    return set(skills1) - set(skills2)
+
+
+def GetModelFieldChange(model, FieldName):
+    return u'\t' \
+           + model._meta.get_field_by_name(FieldName).verbouse_name \
+           + u': ' \
+           + model._meta.get_field_by_name(FieldName) \
+           + u'\n'
+
