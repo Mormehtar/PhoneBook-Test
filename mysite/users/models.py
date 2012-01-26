@@ -47,6 +47,7 @@ class UserProfile(User):
         max_digits=10, decimal_places=0,
         blank='true', null='true', verbose_name=_(u'Work telephone')
     )
+    myemail = models.EmailField(verbose_name=_(u'E-mail'))
     department = models.ForeignKey(Department, verbose_name=_(u'Department'))
     position = models.ForeignKey(Position, verbose_name=_(u'Position'))
     skills = []
@@ -54,6 +55,9 @@ class UserProfile(User):
     class Meta:
         verbose_name = _(u'employee')
         verbose_name_plural = _(u'empolyees')
+
+    def GetModelFieldByName(self, FieldName):
+        return self._meta.get_field_by_name(FieldName)
 
     def __unicode__(self):
         return u'%s %s %s в %s' % (self.first_name, self.last_name,
@@ -66,19 +70,19 @@ class UserProfile(User):
 
 
     def save(self, *args, **kwargs):
-        if not (self.pk):
-            if (self.email):
-                password = auth_models.UserManager().make_random_password()
-                message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s')\
-                          % {'username' : self.username, 'password' : password}
-                send_mail(_(u'Your password on mysite'),
-                          message,
-                          EMAIL_BASE,[self.email])
-            else:
-                password = u''
-            self.set_password(password)
+        self.GeneratePassIfNeeded()
         super(UserProfile, self).save(*args, **kwargs)
         MongoWrite(self.username, self.skills)
+
+
+    def GeneratePassIfNeeded(self):
+        if not (self.pk):
+            password = auth_models.UserManager().make_random_password()
+            message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s') \
+                % {'username': self.username, 'password': password}
+            header = _(u'Your password on mysite')
+            send_mail(header, message, EMAIL_BASE, [self.myemail])
+            self.set_password(password)
 
 
 def MongoRead(name):

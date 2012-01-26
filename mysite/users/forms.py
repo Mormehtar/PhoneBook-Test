@@ -10,7 +10,7 @@ from mysite.users import models
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = models.UserProfile
-        fields = ['username', 'last_name', 'first_name', 'surname', 'email',
+        fields = ['username', 'last_name', 'first_name', 'surname', 'myemail',
                   'mob_tel', 'work_tel', 'department', 'position', 'is_superuser']
 
     skills = forms.CharField(max_length=255, label=_(u'MadSkillz'), widget=forms.Textarea(), required=False)
@@ -25,7 +25,7 @@ class UserProfileForm(forms.ModelForm):
         skills = [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
 
         Message = MakeMessage(self)
-
+        ToList = GetListOfAdresses(self)
 
         self.instance.skills = skills
 
@@ -34,14 +34,14 @@ class UserProfileForm(forms.ModelForm):
 
 def MakeMessage(ChangedForm):
     ChangedData = ChangedForm.changed_data
-    Message = _(u'The following data of User %(lastname)s %(firstname)s %(surname)s (%(username)s) were changed:\n')\
-        % {u'lastname' : ChangedForm.model._meta.get_field_by_name('last_name'),
-           u'firstname' : ChangedForm.model._meta.get_field_by_name('first_name'),
-           u'surname' : ChangedForm.model._meta.get_field_by_name('surname'),
-           u'username' : ChangedForm.model._meta.get_field_by_name('username')}
+    Model = ChangedForm.model
+    Message = _(u'The following data of User %s') % Model.GetModelFieldByName('last_name').strip(string.whitespace) \
+        + u' %s' % Model.GetModelFieldByName('first_name').strip(string.whitespace) \
+        + u' %s' % Model.GetModelFieldByName('surname').strip(string.whitespace) \
+        + u' (%s) were changed:\n' % Model.GetModelFieldByName('username')
     for FieldName in ChangedData:
         if not u'skills':
-            Message += GetModelFieldChange(Meta.model, FieldName)
+            Message += GetModelFieldChange(Model, FieldName)
         else:
             Message += GetSkillsChanges(self.instance.skills, skills, Message)
     return Message
@@ -79,9 +79,5 @@ def SkillsDifference (skills1, skills2):
 
 
 def GetModelFieldChange(model, FieldName):
-    return u'\t' \
-           + model._meta.get_field_by_name(FieldName).verbouse_name \
-           + u': ' \
-           + model._meta.get_field_by_name(FieldName) \
-           + u'\n'
+    return u'\t' + GetModelFieldData(FieldName).verbouse_name + u': ' + GetModelFieldData(FieldName) + u'\n'
 
