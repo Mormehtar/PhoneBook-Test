@@ -59,7 +59,7 @@ class UserProfile(User):
         verbose_name_plural = _(u'empolyees')
 
     def GetModelFieldByName(self, FieldName):
-        return self._meta.get_field_by_name(FieldName)
+        return self._meta.get_field_by_name(FieldName)[0]
 
     def __unicode__(self):
         return u'%s %s %s в %s' % (self.first_name, self.last_name,
@@ -121,7 +121,6 @@ def GetListOfAddresses(PK):
             Addressant.surname,
             Addressant.username)
         Result.append(Element)
-#    a=a
     return Result
 
 

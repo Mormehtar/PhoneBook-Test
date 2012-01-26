@@ -183,7 +183,7 @@ ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'mysite.dashboard.CustomAppIndexDashboard'
 djcelery.setup_loader()
 
 CELERY_DISABLE_RATE_LIMITS = True
-#CELERY_IGNORE_RESULT = True
+CELERY_IGNORE_RESULT = True
 
 BROKER_HOST = "localhost"
 BROKER_PORT = 5672

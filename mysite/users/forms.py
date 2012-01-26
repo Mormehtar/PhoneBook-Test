@@ -66,10 +66,11 @@ def MakeMessage(ChangedForm, ChangedUser):
     ChangedData = ChangedForm.changed_data
     Message = _(u'the following data of User %s has been changed:\n') % (ChangedUser)
     for FieldName in ChangedData:
-        if not u'skills':
-            Message += GetModelFieldChange(ChangedForm.model, FieldName)
-        else:
-            Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
+        if not (FieldName == u'skills'):
+            Message += GetModelFieldChange(ChangedForm.instance, FieldName)
+    if u'skills' in ChangedData:
+        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
+        b=b
     return Message
 
 
@@ -98,7 +99,7 @@ def GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter):
             Message += u'\t' + Skill
             if Skill in NewSkills:
                 Message += u' (added!)'
-        Message += u'\n'
+            Message += u'\n'
     return Message
 
 
@@ -107,5 +108,5 @@ def SkillsDifference (skills1, skills2):
 
 
 def GetModelFieldChange(model, FieldName):
-    return u'\t' + model.GetModelFieldData(FieldName).verbouse_name + u': ' + model.GetModelFieldData(FieldName) + u'\n'
+    return u'\t' + model.GetModelFieldByName(FieldName).verbose_name + u': ' + model.GetModelFieldByName(FieldName) + u'\n'
 
