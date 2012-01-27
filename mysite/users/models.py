@@ -96,6 +96,7 @@ def MongoRead(name):
     else:
         return []
 
+
 def MongoWrite(name, skills):
     connection = pymongo.Connection()
     connection.test_db['madskillz'].find_and_modify(
@@ -123,3 +124,12 @@ def FormReference(last_name,first_name,surname,username):
     else:
         reference = username
     return reference
+
+
+def MongoGetBySkill(skill):
+    connection = pymongo.Connection()
+    result = connection.test_db['madskillz'].find({u'skills':skill})
+    retvalue = []
+    for doc in result:
+        retvalue.add([doc[u'id'],', '.join(doc[u'skills'])])
+    return retvalue
