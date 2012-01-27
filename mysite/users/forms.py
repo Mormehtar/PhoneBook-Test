@@ -39,7 +39,6 @@ class UserProfileForm(forms.ModelForm):
         ChangedUserReference = self.ChangedUserReference()
         Message = MakeMessage(self, ChangedUserReference)
 
-#        tasks.MakeSending(
         tasks.MakeSending.delay(
             ConstMessagePart=Message,
             ChangedUser=self.instance.pk,
@@ -67,10 +66,9 @@ def MakeMessage(ChangedForm, ChangedUser):
     Message = _(u'the following data of User %s has been changed:\n') % (ChangedUser)
     for FieldName in ChangedData:
         if not (FieldName == u'skills'):
-            Message += GetModelFieldChange(ChangedForm.instance, FieldName)
+            Message += GetModelFieldChange(ChangedForm, FieldName)
     if u'skills' in ChangedData:
         Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
-        b=b
     return Message
 
 
@@ -98,7 +96,7 @@ def GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter):
         for Skill in SkillsAfter:
             Message += u'\t' + Skill
             if Skill in NewSkills:
-                Message += u' (added!)'
+                Message += _(u' (added!)')
             Message += u'\n'
     return Message
 
@@ -107,6 +105,7 @@ def SkillsDifference (skills1, skills2):
     return set(skills1) - set(skills2)
 
 
-def GetModelFieldChange(model, FieldName):
-    return u'\t' + model.GetModelFieldByName(FieldName).verbose_name + u': ' + model.GetModelFieldByName(FieldName) + u'\n'
-
+def GetModelFieldChange(form, FieldName):
+    return u'\t%s: %s\n' \
+        % (form.instance.GetModelFieldByName(FieldName).verbose_name,
+           form.cleaned_data[FieldName])

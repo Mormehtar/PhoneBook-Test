@@ -62,8 +62,8 @@ class UserProfile(User):
         return self._meta.get_field_by_name(FieldName)[0]
 
     def __unicode__(self):
-        return u'%s %s %s в %s' % (self.first_name, self.last_name,
-                                   self.position.name, self.department.name)
+        return u'%s %s в %s' % (FormReference(self.last_name, self.first_name, self.surname, self.username),
+                                self.position.name, self.department.name)
 
 
     def __init__(self, *args, **kwargs):
@@ -111,17 +111,10 @@ def GetListOfAddresses(PK):
         BossNames.add(Boss.head)
     Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
     Addressants = BossNames | Colleagues
-    Result = []
-    Element = {}
-    for Addressant in Addressants:
-        Element['email'] = Addressant.myemail
-        Element['person'] = FormReference(
-            Addressant.last_name,
-            Addressant.first_name,
-            Addressant.surname,
-            Addressant.username)
-        Result.append(Element)
-    return Result
+    return [{
+        'email': Addressant.myemail,
+        'person':FormReference(Addressant.last_name,Addressant.first_name,Addressant.surname,Addressant.username)
+    } for Addressant in Addressants]
 
 
 def FormReference(last_name,first_name,surname,username):

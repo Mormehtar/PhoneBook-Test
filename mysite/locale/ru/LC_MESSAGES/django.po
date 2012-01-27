@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-24 15:32+0400\n"
+"POT-Creation-Date: 2012-01-27 13:05+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: dashboard.py:43 menu.py:25
+#: dashboard.py:28 menu.py:25
 msgid "Applications"
 msgstr "Приложения"
 
-#: dashboard.py:54 dashboard.py:100
+#: dashboard.py:33 dashboard.py:51
 msgid "Recent Actions"
 msgstr "Последние действия"
 
@@ -35,27 +35,27 @@ msgstr "Панель управления"
 msgid "Administration"
 msgstr "Администрирование"
 
-#: trans.py:42
+#: trans.py:28
 #, python-format
 msgid "Add %s"
 msgstr "добавить %s"
 
-#: trans.py:44
+#: trans.py:30
 #, python-format
 msgid "Change %s"
 msgstr "Изменить %s"
 
-#: trans.py:47
+#: trans.py:33
 #, python-format
 msgid "Select %s"
 msgstr "Выбрать %s"
 
-#: trans.py:49
+#: trans.py:35
 #, python-format
 msgid "Select %s to change"
 msgstr "Выбрать %s для изменения"
 
-#: trans.py:71
+#: trans.py:57
 #, python-format
 msgid "%s administration"
 msgstr "%s управление"
@@ -76,63 +76,84 @@ msgstr "Изменить"
 msgid "Users"
 msgstr "Пользователи"
 
-#: users/forms.py:16
+#: users/forms.py:17
 msgid "MadSkillz"
 msgstr "Навыки"
 
-#: users/models.py:14
+#: users/forms.py:66
+#, python-format
+msgid "the following data of User %s has been changed:\n"
+msgstr "нижеследующие сведения о пользователе %s были изменены:\n"
+
+#: users/forms.py:86
+msgid "The following skills were deleted:\n"
+msgstr "Следующие навыки были удалены:\n"
+
+#: users/forms.py:95
+msgid "Final list of skills is:\n"
+msgstr "Результирующий список навыков:\n"
+
+#: users/forms.py:99
+msgid " (added!)"
+msgstr " (добавлен!)"
+
+#: users/models.py:17
 msgid "Name"
 msgstr "Название"
 
-#: users/models.py:17
+#: users/models.py:20
 msgid "Head"
 msgstr "Глава"
 
-#: users/models.py:24
+#: users/models.py:27
 msgid "department"
 msgstr "отдел"
 
-#: users/models.py:25
+#: users/models.py:28
 msgid "departments"
 msgstr "отделы"
 
-#: users/models.py:29 users/models.py:50
+#: users/models.py:32 users/models.py:54
 msgid "Position"
 msgstr "Должность"
 
-#: users/models.py:35
+#: users/models.py:38
 msgid "position"
 msgstr "должность"
 
-#: users/models.py:36
+#: users/models.py:39
 msgid "positions"
 msgstr "должности"
 
-#: users/models.py:40
+#: users/models.py:43
 msgid "Surname"
 msgstr "Отчество"
 
-#: users/models.py:43
+#: users/models.py:46
 msgid "Mobile telephone"
 msgstr "Мобильный телефон"
 
-#: users/models.py:47
+#: users/models.py:50
 msgid "Work telephone"
 msgstr "Рабочий телефон"
 
-#: users/models.py:49
+#: users/models.py:52
+msgid "E-mail"
+msgstr "Электронная почта"
+
+#: users/models.py:53
 msgid "Department"
 msgstr "отдел"
 
-#: users/models.py:54
+#: users/models.py:58
 msgid "employee"
 msgstr "сотрудник"
 
-#: users/models.py:55
+#: users/models.py:59
 msgid "empolyees"
 msgstr "сотрудники"
 
-#: users/models.py:97
+#: users/models.py:83
 #, python-format
 msgid ""
 "You have signed on mysite.\n"
@@ -143,6 +164,16 @@ msgstr ""
 "Ваше имя пользователя: %(username)s\n"
 "Ваш пароль: %(password)s"
 
-#: users/models.py:99
+#: users/models.py:85
 msgid "Your password on mysite"
 msgstr "Ваш пароль на сайте mysite"
+
+#: users/models.py:127
+#, python-format
+msgid "Dear %s you recieve this letter becouse "
+msgstr "Уважаемый %s вы получили это письмо потому что "
+
+#: users/models.py:128
+#, python-format
+msgid "User %s chaged his data on Mysite"
+msgstr "информация о пользователе %s на Mysite была изменена"
