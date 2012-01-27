@@ -131,5 +131,5 @@ def MongoGetBySkill(skill):
     result = connection.test_db['madskillz'].find({u'skills':skill})
     retvalue = []
     for doc in result:
-        retvalue.add([doc[u'id'],', '.join(doc[u'skills'])])
+        retvalue.append([doc[u'id'],', '.join(doc[u'skills'])])
     return retvalue

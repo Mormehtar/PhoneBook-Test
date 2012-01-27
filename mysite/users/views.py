@@ -23,8 +23,8 @@ def index(request):
     searchTitle = title
     send = _(u'Search')
     ChangeBase = _(u'Enter base')
-    WayToAdmin = path.join('http://' + request.path + request.get_host(),'admin/')
-    noresult = _(u'')
+    WayToAdmin = path.join(request.path + 'admin/')
+    noresult = _(u'Nothing was found')
     CleanEmployees = []
     if request.method == 'POST':
         form = MongoSearchForm(request.POST)
@@ -33,10 +33,13 @@ def index(request):
             UnCleanEmployees = models.MongoGetBySkill(cd['search'])
             for Employee in UnCleanEmployees:
                 try :
-                    CleanEmployees.add(employee(models.UserProfile.objects.get(username__exact=Employee[0]),Employee[1]))
+                    CleanEmployees.append(
+                        employee(models.UserProfile.objects.get(username__exact=Employee[0]),
+                        Employee[1]))
                 except:
                     pass
-            c=c
+            a = CleanEmployees
+            b = b
             return render_to_response('search_form.html', {
                 'title':title,
                 'searchTitle':searchTitle,
