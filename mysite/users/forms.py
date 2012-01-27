@@ -109,3 +109,7 @@ def GetModelFieldChange(form, FieldName):
     return u'\t%s: %s\n' \
         % (form.instance.GetModelFieldByName(FieldName).verbose_name,
            form.cleaned_data[FieldName])
+
+
+class MongoSearchForm(forms.Form):
+    search = forms.CharField(max_length=255, label=_(u'Search skill'), widget=forms.Textarea(), required=False)
