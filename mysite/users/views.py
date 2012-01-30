@@ -19,12 +19,7 @@ class empoyee():
 
 
 def index(request):
-    title = _(u'Skilled employees search engine!')
-    searchTitle = title
-    send = _(u'Search')
-    ChangeBase = _(u'Enter base')
     WayToAdmin = path.join(request.path + 'admin/')
-    noresult = _(u'Nothing was found')
     CleanEmployees = []
     if request.method == 'POST':
         form = MongoSearchForm(request.POST)
@@ -39,27 +34,17 @@ def index(request):
                 except:
                     pass
             return render_to_response('search_form.html', {
-                'title':title,
-                'searchTitle':searchTitle,
                 'form':MongoSearchForm,
-                'send':send,
                 'request':True,
                 'result':CleanEmployees,
-                'noresult':noresult,
                 'WayToAdmin':WayToAdmin,
-                'ChangeBase':ChangeBase
             })
     else:
         return render_to_response('search_form.html', {
-            'title':title,
-            'searchTitle':searchTitle,
             'form':MongoSearchForm,
-            'send':send,
             'request':False,
             'result':CleanEmployees,
-            'noresult':noresult,
             'WayToAdmin':WayToAdmin,
-            'ChangeBase':ChangeBase
         })
 
 
