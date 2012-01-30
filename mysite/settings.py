@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 # Django settings for mysite project.
 from os import path
 import djcelery

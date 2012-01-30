@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 import string
 import pymongo
 
@@ -30,13 +32,15 @@ class UserProfileForm(forms.ModelForm):
 
 
     def ParseSkills(self):
-        return [parsed_skills_cleared_of_whitespaces
-                for parsed_skills_cleared_of_whitespaces in ParseSkillsWithWhitespaces.strip(string.whitespace)
-                    if parsed_skills_cleared_of_whitespaces!=u'']
+        return [
+                skills_cleared_of_whitespaces
+                for skills_cleared_of_whitespaces in ParseSkillsWithWhitespaces.strip(string.whitespace)
+                    if skills_cleared_of_whitespaces!=u''
+        ]
 
     def ParseSkillsWithWhitespaces(self):
-        return [parsed_skills_with_whitespaces
-               for parsed_skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')]
+        return [skills_with_whitespaces
+               for skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')]
 
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()

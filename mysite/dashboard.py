@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 """
 This file was generated with the customdashboard management command, it
 contains the two classes for the main dashboard and app index dashboard.

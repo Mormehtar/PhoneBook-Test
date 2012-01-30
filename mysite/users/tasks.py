@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+
 from celery.task import task
 
 from django.utils.translation import ugettext as _
