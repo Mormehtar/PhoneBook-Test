@@ -13,8 +13,8 @@ from mysite.users import models
 def MakeSending(ConstMessagePart, ChangedUserDepartment, ChangedUserReference):
     To = models.GetListOfAddressesAndNames(ChangedUserDepartment)
     for person in To:
-        header = _(u'Dear %s you recieve this letter becouse ') % (person['person'])
-        title = _(u'User %s chaged his data on Mysite') % (ChangedUserReference)
+        header = _(u'Dear %s you recieve this letter becouse ') % person['person']
+        title = _(u'User %s chaged his data on Mysite') % ChangedUserReference
         message = header + ConstMessagePart
         AsyncSendEmail.delay(title, message, u'dont@reply.ua',person['email'])
 

@@ -23,17 +23,20 @@ class UserProfileForm(forms.ModelForm):
 
 
     def save(self, *args, **kwargs):
-
         self.SendNotifications()
-
-        self.instance.skills = self.ParcedSkills()
-
+        self.instance.skills = self.ParseSkills()
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
-    def ParcedSkills(self):
-        return [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
+    def ParseSkills(self):
+        return [parsed_skills_cleared_of_whitespaces
+                for parsed_skills_cleared_of_whitespaces in ParseSkillsWithWhitespaces.strip(string.whitespace)
+                    if parsed_skills_cleared_of_whitespaces!=u'']
+
+    def ParseSkillsWithWhitespaces(self):
+        return [parsed_skills_with_whitespaces
+               for parsed_skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')]
 
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()
@@ -68,7 +71,7 @@ def MakeMessage(ChangedForm, ChangedUser):
         if not (FieldName == u'skills'):
             Message += GetModelFieldChange(ChangedForm, FieldName)
     if u'skills' in ChangedData:
-        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
+        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParseSkills())
     return Message
 
 

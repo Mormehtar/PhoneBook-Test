@@ -48,6 +48,6 @@ def FindEmloyeesBySkills(form):
             employees.append(
                 empoyee(models.UserProfile.objects.get(username__exact=employee[0]),
                         employee[1]))
-        except:
+        except: # On case of MongoDB-SQLite3 bases inconsistency
             pass
     return employees
