@@ -11,7 +11,7 @@ from mysite.users import models
 
 @task()
 def MakeSending(ConstMessagePart, ChangedUserDepartment, ChangedUserReference):
-    To = models.GetListOfAddresses(ChangedUserDepartment)
+    To = models.GetListOfAddressesAndNames(ChangedUserDepartment)
     for person in To:
         header = _(u'Dear %s you recieve this letter becouse ') % (person['person'])
         title = _(u'User %s chaged his data on Mysite') % (ChangedUserReference)

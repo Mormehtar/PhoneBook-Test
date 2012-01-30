@@ -19,33 +19,35 @@ class empoyee():
 
 
 def index(request):
-    WayToAdmin = path.join(request.path + 'admin/')
-    CleanEmployees = []
+    way_to_admin = path.join(request.path + 'admin/')
     if request.method == 'POST':
         form = MongoSearchForm(request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
-            UnCleanEmployees = models.MongoGetBySkill(cd['search'])
-            for Employee in UnCleanEmployees:
-                try :
-                    CleanEmployees.append(
-                        empoyee(models.UserProfile.objects.get(username__exact=Employee[0]),
-                        Employee[1]))
-                except:
-                    pass
+            Employees = FindEmloyeesBySkills(form)
             return render_to_response('search_form.html', {
                 'form':MongoSearchForm,
                 'request':True,
-                'result':CleanEmployees,
-                'WayToAdmin':WayToAdmin,
+                'result':Employees,
+                'WayToAdmin':way_to_admin,
             })
     else:
         return render_to_response('search_form.html', {
             'form':MongoSearchForm,
             'request':False,
-            'result':CleanEmployees,
-            'WayToAdmin':WayToAdmin,
+            'result':[],
+            'WayToAdmin':way_to_admin,
         })
 
 
-
+def FindEmloyeesBySkills(form):
+    cd = form.cleaned_data
+    employees_in_mogodb_format = models.MongoGetBySkill(cd['search'])
+    employees = []
+    for employee in employees_in_mogodb_format:
+        try:
+            employees.append(
+                empoyee(models.UserProfile.objects.get(username__exact=employee[0]),
+                        employee[1]))
+        except:
+            pass
+    return employees

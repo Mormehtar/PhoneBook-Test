@@ -105,6 +105,32 @@ class UserProfile(User):
             self.set_password(password)
 
 
+def GetListOfAddressesAndNames(UserDepartment):
+    Addressants = GetListOfAdressants(UserDepartment)
+    return [{
+        'email': Addressant.myemail,
+        'person':FormReference(Addressant.last_name,Addressant.first_name,Addressant.surname,Addressant.username)
+    } for Addressant in Addressants]
+
+
+def GetListOfAdressants(UserDepartment):
+    Bosses = Department.objects.exclude(head__isnull=False)
+    BossNames = set()
+    for Boss in Bosses:
+        BossNames.add(Boss.head)
+    Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
+    Addressants = (BossNames | Colleagues).discard(None) # On case of headless departments
+    return Addressants
+
+
+def FormReference(last_name,first_name,surname,username):
+    if len(last_name)+len(first_name)+len(surname)>0 :
+        reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
+    else:
+        reference = username
+    return reference
+
+
 def MongoRead(name):
     connection = pymongo.Connection()
     temp_skills = connection.test_db['madskillz'].find_one({u'id':name})
@@ -120,28 +146,6 @@ def MongoWrite(name, skills):
     connection.test_db['madskillz'].find_and_modify(
         query={u'id':name},upsert=True,update={'$set' : {u'skills' : skills}})
     connection.end_request()
-
-
-def GetListOfAddresses(UserDepartment):
-    Bosses = Department.objects.exclude(head__isnull=False)
-    BossNames = set()
-    for Boss in Bosses:
-        BossNames.add(Boss.head)
-    Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
-    Addressants = (BossNames | Colleagues)
-    Addressants.discard(None)
-    return [{
-        'email': Addressant.myemail,
-        'person':FormReference(Addressant.last_name,Addressant.first_name,Addressant.surname,Addressant.username)
-    } for Addressant in Addressants]
-
-
-def FormReference(last_name,first_name,surname,username):
-    if len(last_name)+len(first_name)+len(surname)>0 :
-        reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
-    else:
-        reference = username
-    return reference
 
 
 def MongoGetBySkill(skill):
