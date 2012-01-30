@@ -10,8 +10,8 @@ from mysite.users import models
 #from mysite.users import models
 
 @task()
-def MakeSending(ConstMessagePart, ChangedUser, ChangedUserReference):
-    To = models.GetListOfAddresses(ChangedUser)
+def MakeSending(ConstMessagePart, ChangedUserDepartment, ChangedUserReference):
+    To = models.GetListOfAddresses(ChangedUserDepartment)
     Message = ConstMessagePart + u'\n\n' + GetUnicodeFromListOfDict(To)
     send_mail(u'Тестовое письмо MySite', Message, u'dont@reply.ua',[u'mormehtar@gmail.com'])
     for person in To:

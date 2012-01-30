@@ -41,7 +41,7 @@ class UserProfileForm(forms.ModelForm):
 
         tasks.MakeSending.delay(
             ConstMessagePart=Message,
-            ChangedUser=self.instance.pk,
+            ChangedUserDepartment=self.instance.department,
             ChangedUserReference=ChangedUserReference)
 
 

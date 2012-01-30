@@ -54,12 +54,15 @@ class UserProfile(User):
     position = models.ForeignKey(Position, verbose_name=_(u'Position'))
     skills = []
 
+
     class Meta:
         verbose_name = _(u'employee')
         verbose_name_plural = _(u'empolyees')
 
+
     def GetModelFieldByName(self, FieldName):
         return self._meta.get_field_by_name(FieldName)[0]
+
 
     def __unicode__(self):
         return u'%s %s в %s' % (FormReference(self.last_name, self.first_name, self.surname, self.username),
@@ -104,8 +107,8 @@ def MongoWrite(name, skills):
     connection.end_request()
 
 
-def GetListOfAddresses(PK):
-    UserDepartment = UserProfile.objects.get(pk=PK).department
+def GetListOfAddresses(UserDepartment):
+#    UserDepartment = UserProfile.objects.get(pk=PK).department
     Bosses = Department.objects.all()
     BossNames = set()
     for Boss in Bosses:
