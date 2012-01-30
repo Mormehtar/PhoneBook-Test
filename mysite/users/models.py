@@ -108,7 +108,6 @@ def MongoWrite(name, skills):
 
 
 def GetListOfAddresses(UserDepartment):
-#    UserDepartment = UserProfile.objects.get(pk=PK).department
     Bosses = Department.objects.all()
     BossNames = set()
     for Boss in Bosses:
