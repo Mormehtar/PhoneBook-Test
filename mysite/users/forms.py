@@ -14,7 +14,7 @@ class UserProfileForm(forms.ModelForm):
         fields = ['username', 'last_name', 'first_name', 'surname', 'myemail',
                   'mob_tel', 'work_tel', 'department', 'position', 'is_superuser']
 
-    skills = forms.CharField(max_length=255, label=_(u'MadSkillz'), widget=forms.Textarea(), required=False)
+    skills = forms.CharField(max_length=255, label=_(u'MadSkillz'), widget=forms.Textarea(), required=False, help_text=_(u'Each skill from new line'))
 
 
     def __init__(self, *args, **kwargs):

@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from admin_tools.menu import items, Menu
 
-
 class CustomMenu(Menu):
     """
     Custom Menu for mysite admin site.
@@ -19,15 +18,16 @@ class CustomMenu(Menu):
     def __init__(self, **kwargs):
         Menu.__init__(self, **kwargs)
         self.children += [
+            items.MenuItem(_('Return to site'), '/'),
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
             items.Bookmarks(),
             items.AppList(
                 _('Applications'),
-                exclude=('django.contrib.*',)
+                exclude=('djcelery.*','django.contrib.*',)
             ),
             items.AppList(
                 _('Administration'),
-                models=('django.contrib.*',)
+                models=('django.contrib.*',),
             )
         ]
 

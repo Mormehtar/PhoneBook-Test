@@ -6,12 +6,25 @@ from django.contrib.auth import models as auth_models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
-#from settings import EMAIL_BASE
+from django.core.validators import RegexValidator
 import pymongo
 
 import string
 
 # Create your models here.
+
+WRONG_NUMBER = _(u'Wrong phone number')
+COUNTRY_CODE = r'(\+?\d)'
+CITY_CODE = r'(\(\d+\))'
+PHONE_NUMBER = r'((\d+[\w-]?)+)'
+CONCATENATOR = r'?\s*'
+PHONE_NUMBER_REGEXP = '^'\
+                      + COUNTRY_CODE\
+                      + CONCATENATOR\
+                      + CITY_CODE\
+                      + CONCATENATOR\
+                      + PHONE_NUMBER\
+                      + '$'
 
 class Department(models.Model):
     name = models.CharField(max_length = 30, verbose_name=_(u'Name'))
@@ -44,12 +57,12 @@ class UserProfile(User):
     mob_tel = models.CharField(
         max_length = 30, blank='true', null='true',
         verbose_name=_(u'Mobile telephone'),
-        validators=[RegexValidator(r'?[+]*\w?(\(*\d\))*\w*(*\d?[-\w])')]
+        validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
     )
-    work_tel = models.models.CharField(
+    work_tel = models.CharField(
         max_length = 30, blank='true', null='true',
         verbose_name=_(u'Work telephone'),
-        validators=[RegexValidator(r'?[+]*\w?(\(*\d\))*\w*(*\d?[-\w])')]
+        validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
     )
     myemail = models.EmailField(verbose_name=_(u'E-mail'))
     department = models.ForeignKey(Department, verbose_name=_(u'Department'))
@@ -110,12 +123,13 @@ def MongoWrite(name, skills):
 
 
 def GetListOfAddresses(UserDepartment):
-    Bosses = Department.objects.all()
+    Bosses = Department.objects.exclude(head__isnull=False)
     BossNames = set()
     for Boss in Bosses:
         BossNames.add(Boss.head)
     Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
-    Addressants = BossNames | Colleagues
+    Addressants = (BossNames | Colleagues)
+    Addressants.discard(None)
     return [{
         'email': Addressant.myemail,
         'person':FormReference(Addressant.last_name,Addressant.first_name,Addressant.surname,Addressant.username)
