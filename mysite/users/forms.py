@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 import string
 import pymongo
 
@@ -26,21 +24,13 @@ class UserProfileForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         self.SendNotifications()
-        self.instance.skills = self.ParseSkills()
+        self.instance.skills = self.ParcedSkills()
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
-    def ParseSkills(self):
-        return [
-                skills_cleared_of_whitespaces
-                for skills_cleared_of_whitespaces in ParseSkillsWithWhitespaces.strip(string.whitespace)
-                    if skills_cleared_of_whitespaces!=u''
-        ]
-
-    def ParseSkillsWithWhitespaces(self):
-        return [skills_with_whitespaces
-               for skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')]
+    def ParcedSkills(self):
+        return [parced_skills_cleared_of_whitespaces for parced_skills_cleared_of_whitespaces in (parced_skills_with_whitespaces.strip(string.whitespace) for parced_skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')) if parced_skills_cleared_of_whitespaces!=u'']
 
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()
@@ -75,7 +65,7 @@ def MakeMessage(ChangedForm, ChangedUser):
         if not (FieldName == u'skills'):
             Message += GetModelFieldChange(ChangedForm, FieldName)
     if u'skills' in ChangedData:
-        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParseSkills())
+        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
     return Message
 
 

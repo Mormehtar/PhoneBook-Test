@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 15:43+0400\n"
+"POT-Creation-Date: 2012-01-30 16:41+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: dashboard.py:26 menu.py:25
+#: dashboard.py:28 menu.py:25
 msgid "Applications"
 msgstr "Приложения"
 
-#: dashboard.py:31 dashboard.py:49
+#: dashboard.py:33 dashboard.py:51
 msgid "Recent Actions"
 msgstr "Последние действия"
 
@@ -104,32 +104,32 @@ msgstr "Изменить"
 msgid "Users"
 msgstr "Пользователи"
 
-#: users/forms.py:17
+#: users/forms.py:19
 msgid "MadSkillz"
 msgstr "Навыки"
 
-#: users/forms.py:17
+#: users/forms.py:19
 msgid "Each skill from new line"
 msgstr "Каждый навык с новой строки"
 
-#: users/forms.py:66
+#: users/forms.py:73
 #, python-format
 msgid "the following data of User %s has been changed:\n"
 msgstr "нижеследующие сведения о пользователе %s были изменены:\n"
 
-#: users/forms.py:86
+#: users/forms.py:93
 msgid "The following skills were deleted:\n"
 msgstr "Следующие навыки были удалены:\n"
 
-#: users/forms.py:95
+#: users/forms.py:102
 msgid "Final list of skills is:\n"
 msgstr "Результирующий список навыков:\n"
 
-#: users/forms.py:99
+#: users/forms.py:106
 msgid " (added!)"
 msgstr " (добавлен!)"
 
-#: users/forms.py:115
+#: users/forms.py:122
 msgid "Search skill"
 msgstr "Искать навык"
 
@@ -198,22 +198,18 @@ msgstr "сотрудники"
 msgid ""
 "You have signed on mysite.\n"
 "Your username is: %(username)s\n"
-"Your password is: %(password)s"
+"Your password is: %(password)s\n"
 msgstr ""
 "Вы за регистрировались на сайте mysite\n"
 "Ваше имя пользователя: %(username)s\n"
-"Ваш пароль: %(password)s"
+"Ваш пароль: %(password)s\n"
 
 #: users/models.py:103
 msgid "Your password on mysite"
 msgstr "Ваш пароль на сайте mysite"
 
-#: users/tasks.py:18
-#, python-format
-msgid "Dear %s you recieve this letter becouse "
-msgstr "Уважаемый %s вы получили это письмо потому что "
+#~ msgid "Dear %s you recieve this letter becouse "
+#~ msgstr "Уважаемый %s вы получили это письмо потому что "
 
-#: users/tasks.py:19
-#, python-format
-msgid "User %s chaged his data on Mysite"
-msgstr "информация о пользователе %s на Mysite была изменена"
+#~ msgid "User %s chaged his data on Mysite"
+#~ msgstr "информация о пользователе %s на Mysite была изменена"

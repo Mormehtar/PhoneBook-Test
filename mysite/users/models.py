@@ -16,7 +16,7 @@ import string
 WRONG_NUMBER = _(u'Wrong phone number')
 COUNTRY_CODE = r'(\+?\d)'
 CITY_CODE = r'(\(\d+\))'
-PHONE_NUMBER = r'((\d+[\w-]?)+)'
+PHONE_NUMBER = r'((\d+[\s-]?)+)'
 CONCATENATOR = r'?\s*'
 PHONE_NUMBER_REGEXP = '^'\
                       + COUNTRY_CODE\
@@ -119,7 +119,8 @@ def GetListOfAdressants(UserDepartment):
     for Boss in Bosses:
         BossNames.add(Boss.head)
     Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
-    Addressants = (BossNames | Colleagues).discard(None) # On case of headless departments
+    Addressants = (BossNames | Colleagues)
+    Addressants.discard(None) # On case of headless departments
     return Addressants
 
 
