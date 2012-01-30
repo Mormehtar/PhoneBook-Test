@@ -112,4 +112,4 @@ def GetModelFieldChange(form, FieldName):
 
 
 class MongoSearchForm(forms.Form):
-    search = forms.CharField(max_length=255, label=_(u'Search skill'), widget=forms.Textarea(), required=False)
+    search = forms.CharField(max_length=255, label=_(u'Search skill'), required=False)
