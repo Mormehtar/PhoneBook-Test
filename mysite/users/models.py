@@ -34,7 +34,7 @@ class Department(models.Model):
     )
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % self.name
 
     class Meta:
         verbose_name = _(u'department')
@@ -45,7 +45,7 @@ class Position(models.Model):
     name = models.CharField(max_length = 30, verbose_name=_(u'Position'))
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % self.name
 
     class Meta:
         verbose_name = _(u'position')
@@ -96,9 +96,9 @@ class UserProfile(User):
 
 
     def GeneratePassIfNeeded(self):
-        if not (self.pk):
+        if not self.pk:
             password = auth_models.UserManager().make_random_password()
-            message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s') \
+            message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s\n') \
                 % {'username': self.username, 'password': password}
             header = _(u'Your password on mysite')
             send_mail(header, message, u'dont@reply.ua', [self.myemail])

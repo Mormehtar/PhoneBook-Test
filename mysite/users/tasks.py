@@ -12,8 +12,6 @@ from mysite.users import models
 @task()
 def MakeSending(ConstMessagePart, ChangedUserDepartment, ChangedUserReference):
     To = models.GetListOfAddresses(ChangedUserDepartment)
-    Message = ConstMessagePart + u'\n\n' + GetUnicodeFromListOfDict(To)
-    send_mail(u'Тестовое письмо MySite', Message, u'dont@reply.ua',[u'mormehtar@gmail.com'])
     for person in To:
         header = _(u'Dear %s you recieve this letter becouse ') % (person['person'])
         title = _(u'User %s chaged his data on Mysite') % (ChangedUserReference)
@@ -23,7 +21,3 @@ def MakeSending(ConstMessagePart, ChangedUserDepartment, ChangedUserReference):
 @task()
 def AsyncSendEmail(Title,Message,From,To):
     send_mail(Title, Message, From,[To])
-
-
-def GetUnicodeFromListOfDict(ListOfDict):
-    return '\n'.join([ u'%s: %s\n' % (Element['person'], Element['email']) for Element in ListOfDict])
