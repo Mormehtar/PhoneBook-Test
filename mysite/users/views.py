@@ -34,12 +34,10 @@ def index(request):
             for Employee in UnCleanEmployees:
                 try :
                     CleanEmployees.append(
-                        employee(models.UserProfile.objects.get(username__exact=Employee[0]),
+                        empoyee(models.UserProfile.objects.get(username__exact=Employee[0]),
                         Employee[1]))
                 except:
                     pass
-            a = CleanEmployees
-            b = b
             return render_to_response('search_form.html', {
                 'title':title,
                 'searchTitle':searchTitle,
