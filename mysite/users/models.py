@@ -41,13 +41,15 @@ class Position(models.Model):
 
 class UserProfile(User):
     surname = models.CharField(max_length = 30, blank='true', null='true', verbose_name=_(u'Surname'))
-    mob_tel = models.DecimalField(
-        max_digits=10, decimal_places=0,
-        blank='true', null='true', verbose_name=_(u'Mobile telephone')
+    mob_tel = models.CharField(
+        max_length = 30, blank='true', null='true',
+        verbose_name=_(u'Mobile telephone'),
+        validators=[RegexValidator(r'?[+]*\w?(\(*\d\))*\w*(*\d?[-\w])')]
     )
-    work_tel = models.DecimalField(
-        max_digits=10, decimal_places=0,
-        blank='true', null='true', verbose_name=_(u'Work telephone')
+    work_tel = models.models.CharField(
+        max_length = 30, blank='true', null='true',
+        verbose_name=_(u'Work telephone'),
+        validators=[RegexValidator(r'?[+]*\w?(\(*\d\))*\w*(*\d?[-\w])')]
     )
     myemail = models.EmailField(verbose_name=_(u'E-mail'))
     department = models.ForeignKey(Department, verbose_name=_(u'Department'))
