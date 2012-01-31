@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 """
 This file was generated with the custommenu management command, it contains
 the classes for the admin menu, you can customize this class as you want.

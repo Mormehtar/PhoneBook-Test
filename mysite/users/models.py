@@ -114,7 +114,7 @@ def GetListOfAddressesAndNames(UserDepartment):
 
 
 def GetListOfAdressants(UserDepartment):
-    Bosses = Department.objects.exclude(head__isnull=False)
+    Bosses = Department.objects.all()
     BossNames = set()
     for Boss in Bosses:
         BossNames.add(Boss.head)

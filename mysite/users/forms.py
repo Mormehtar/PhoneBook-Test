@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 import string
 import pymongo
 
@@ -23,14 +25,17 @@ class UserProfileForm(forms.ModelForm):
 
 
     def save(self, *args, **kwargs):
+
         self.SendNotifications()
+
         self.instance.skills = self.ParcedSkills()
+
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
     def ParcedSkills(self):
-        return [parced_skills_cleared_of_whitespaces for parced_skills_cleared_of_whitespaces in (parced_skills_with_whitespaces.strip(string.whitespace) for parced_skills_with_whitespaces in self.cleaned_data['skills'].split(u'\n')) if parced_skills_cleared_of_whitespaces!=u'']
+        return [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
 
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()
