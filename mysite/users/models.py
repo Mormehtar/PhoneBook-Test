@@ -75,27 +75,27 @@ class UserProfile(User):
         verbose_name_plural = _(u'empolyees')
 
 
-    def GetModelFieldByName(self, field_name):
+    def get_model_field_by_name(self, field_name):
         return self._meta.get_field_by_name(field_name)[0]
 
 
     def __unicode__(self):
-        return u'%s %s в %s' % (FormReference(self.last_name, self.first_name, self.surname, self.username),
+        return u'%s %s в %s' % (form_reference(self.last_name, self.first_name, self.surname, self.username),
                                 self.position.name, self.department.name)
 
 
     def __init__(self, *args, **kwargs):
         super(UserProfile, self).__init__(*args, **kwargs)
-        self.skills = MongoRead(self.username)
+        self.skills = mongo_read(self.username)
 
 
     def save(self, *args, **kwargs):
-        self.GeneratePassIfNeeded()
+        self.generate_pass_if_needed()
         super(UserProfile, self).save(*args, **kwargs)
-        MongoWrite(self.username, self.skills)
+        mongo_write(self.username, self.skills)
 
 
-    def GeneratePassIfNeeded(self):
+    def generate_pass_if_needed(self):
         if not self.pk:
             password = auth_models.UserManager().make_random_password()
             message = _(u'You have signed on mysite.\nYour username is: %(username)s\nYour password is: %(password)s\n') \
@@ -105,26 +105,26 @@ class UserProfile(User):
             self.set_password(password)
 
 
-def GetListOfAddressesAndNames(UserDepartment):
-    Addressants = GetListOfAdressants(UserDepartment)
+def get_list_of_addresses_and_names(user_department):
+    addressants = get_list_of_adressants(user_department)
     return [{
-        'email': Addressant.myemail,
-        'person':FormReference(Addressant.last_name,Addressant.first_name,Addressant.surname,Addressant.username)
-    } for Addressant in Addressants]
+        'email': addressant.myemail,
+        'person':form_reference(addressant.last_name,addressant.first_name,addressant.surname,addressant.username)
+    } for addressant in addressants]
 
 
-def GetListOfAdressants(UserDepartment):
-    Bosses = Department.objects.all()
-    BossNames = set()
-    for Boss in Bosses:
-        BossNames.add(Boss.head)
-    Colleagues = set(UserProfile.objects.filter(department=UserDepartment))
-    Addressants = (BossNames | Colleagues)
-    Addressants.discard(None) # On case of headless departments
-    return Addressants
+def get_list_of_adressants(user_department):
+    bosses = Department.objects.all()
+    boss_names = set()
+    for boss in bosses:
+        boss_names.add(boss.head)
+    colleagues = set(UserProfile.objects.filter(department=user_department))
+    addressants = (boss_names | colleagues)
+    addressants.discard(None) # On case of headless departments
+    return addressants
 
 
-def FormReference(last_name,first_name,surname,username):
+def form_reference(last_name,first_name,surname,username):
     if len(last_name)+len(first_name)+len(surname)>0 :
         reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
     else:
@@ -132,7 +132,7 @@ def FormReference(last_name,first_name,surname,username):
     return reference
 
 
-def MongoRead(name):
+def mongo_read(name):
     connection = pymongo.Connection()
     temp_skills = connection.test_db['madskillz'].find_one({u'id':name})
     connection.end_request()
@@ -142,14 +142,14 @@ def MongoRead(name):
         return []
 
 
-def MongoWrite(name, skills):
+def mongo_write(name, skills):
     connection = pymongo.Connection()
     connection.test_db['madskillz'].find_and_modify(
         query={u'id':name},upsert=True,update={'$set' : {u'skills' : skills}})
     connection.end_request()
 
 
-def MongoGetBySkill(skill):
+def mongo_get_by_skill(skill):
     connection = pymongo.Connection()
     result = connection.test_db['madskillz'].find({u'skills':skill})
     retvalue = []

@@ -57,17 +57,17 @@ class UserProfileForm(forms.ModelForm):
     def get_changed_user_reference(self):
         model = self.Meta.model
         if self.is_bound:
-            return models.FormReference(
+            return models.form_reference(
                 self.instance.last_name,
                 self.instance.first_name,
                 self.instance.surname,
                 self.instance.username)
         else:
-            return models.FormReference(
-                model.GetModelFieldByName('last_name'),
-                model.GetModelFieldByName('first_name'),
-                model.GetModelFieldByName('surname'),
-                model.GetModelFieldByName('username'))
+            return models.form_reference(
+                model.get_model_field_by_name('last_name'),
+                model.get_model_field_by_name('first_name'),
+                model.get_model_field_by_name('surname'),
+                model.get_model_field_by_name('username'))
 
 
 def make_message(changed_form, changed_user):
@@ -116,7 +116,7 @@ def get_skills_difference (skills1, skills2):
 
 def get_model_field_change(form, field_name):
     return u'\t%s: %s\n' \
-        % (form.instance.GetModelFieldByName(field_name).verbose_name,
+        % (form.instance.get_model_field_by_name(field_name).verbose_name,
            form.cleaned_data[field_name])
 
 

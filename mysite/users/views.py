@@ -43,7 +43,7 @@ def index(request):
 
 def FindEmloyeesBySkills(form):
     cd = form.cleaned_data
-    employees_in_mogodb_format = models.MongoGetBySkill(cd['search'])
+    employees_in_mogodb_format = models.mongo_get_by_skill(cd['search'])
     employees = []
     for employee in employees_in_mogodb_format:
         try:
