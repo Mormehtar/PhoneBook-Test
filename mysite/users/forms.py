@@ -39,7 +39,7 @@ class UserProfileForm(forms.ModelForm):
         tasks.MakeSending.delay(
             ConstMessagePart=Message,
             ChangedUserDepartment=self.instance.department,
-            ChangedUserReference=ChangedUserReference)
+            title=u'Данные сотрудника %s на Mysite были изменены' % ChangedUserReference)
 
 
     def ChangedUserReference(self):
