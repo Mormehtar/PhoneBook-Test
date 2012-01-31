@@ -28,21 +28,28 @@ class UserProfileForm(forms.ModelForm):
 
         self.SendNotifications()
 
-        self.instance.skills = self.ParcedSkills()
+        self.instance.skills = self.ParseSkills()
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
-    def ParcedSkills(self):
-        return [s for s in (k.strip(string.whitespace) for k in self.cleaned_data['skills'].split(u'\n')) if s!=u'']
+    def ParseSkills(self):
+        return [
+            parsed_skills_with_empty_lines for parsed_skills_with_empty_lines in
+                (
+                    parsed_skills_with_whitespaces.strip(string.whitespace) for parsed_skills_with_whitespaces in
+                        self.cleaned_data['skills'].split(u'\n')
+                )
+            if parsed_skills_with_empty_lines!=u''
+        ]
 
     def SendNotifications(self):
         ChangedUserReference = self.ChangedUserReference()
-        Message = MakeMessage(self, ChangedUserReference)
+        ConstMessagePart = MakeMessage(self, ChangedUserReference)
 
         tasks.MakeSending.delay(
-            ConstMessagePart=Message,
+            ConstMessagePart=ConstMessagePart,
             ChangedUserDepartment=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % ChangedUserReference)
 
@@ -70,7 +77,7 @@ def MakeMessage(ChangedForm, ChangedUser):
         if not (FieldName == u'skills'):
             Message += GetModelFieldChange(ChangedForm, FieldName)
     if u'skills' in ChangedData:
-        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParcedSkills())
+        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParseSkills())
     return Message
 
 
