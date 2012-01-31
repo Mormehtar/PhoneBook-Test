@@ -81,43 +81,43 @@ def MakeMessage(changed_form, changed_user):
     return message
 
 
-def GetSkillsChanges(SkillsBefore, SkillsAfter):
-    NewSkills = SkillsDifference(SkillsAfter, SkillsBefore)
-    DeletedSkills = SkillsDifference(SkillsBefore, SkillsAfter)
-    Message = GetDeletedSkillsMessage(DeletedSkills)
-    Message += GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter)
-    return Message
+def GetSkillsChanges(skills_before, skills_after):
+    new_skills = GetSkillsDifference(skills_after, skills_before)
+    deleted_skills = GetSkillsDifference(skills_before, skills_after)
+    message = GetDeletedSkillsMessage(deleted_skills)
+    message += GetFinalSkillsMessageWithNew(new_skills, skills_after)
+    return message
 
 
-def GetDeletedSkillsMessage(DeletedSkills):
-    Message = u''
-    if len(DeletedSkills) > 0:
-        Message = _(u'The following skills were deleted:\n')
-        for Skill in DeletedSkills:
-            Message += u'\t' + Skill + u'\n'
-    return Message
+def GetDeletedSkillsMessage(deleted_skills):
+    message = u''
+    if len(deleted_skills) > 0:
+        message = _(u'The following skills were deleted:\n')
+        for skill in deleted_skills:
+            message += u'\t' + skill + u'\n'
+    return message
 
 
-def GetFinalSkillsMessageWithNew(NewSkills, SkillsAfter):
-    Message = u''
-    if len(NewSkills) > 0:
-        Message = _(u'Final list of skills is:\n')
-        for Skill in SkillsAfter:
-            Message += u'\t' + Skill
-            if Skill in NewSkills:
-                Message += _(u' (added!)')
-            Message += u'\n'
-    return Message
+def GetFinalSkillsMessageWithNew(new_skills, skills_after):
+    message = u''
+    if len(new_skills) > 0:
+        message = _(u'Final list of skills is:\n')
+        for skill in skills_after:
+            message += u'\t' + skill
+            if skill in new_skills:
+                message += _(u' (added!)')
+            message += u'\n'
+    return message
 
 
-def SkillsDifference (skills1, skills2):
+def GetSkillsDifference (skills1, skills2):
     return set(skills1) - set(skills2)
 
 
-def GetModelFieldChange(form, FieldName):
+def GetModelFieldChange(form, field_name):
     return u'\t%s: %s\n' \
-        % (form.instance.GetModelFieldByName(FieldName).verbose_name,
-           form.cleaned_data[FieldName])
+        % (form.instance.GetModelFieldByName(field_name).verbose_name,
+           form.cleaned_data[field_name])
 
 
 class MongoSearchForm(forms.Form):
