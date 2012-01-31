@@ -45,16 +45,16 @@ class UserProfileForm(forms.ModelForm):
         ]
 
     def SendNotifications(self):
-        ChangedUserReference = self.ChangedUserReference()
-        ConstMessagePart = MakeMessage(self, ChangedUserReference)
+        changed_user_reference = self.GetChangedUserReference()
+        const_message_part = MakeMessage(self, changed_user_reference)
 
         tasks.MakeSending.delay(
-            ConstMessagePart=ConstMessagePart,
+            ConstMessagePart=const_message_part,
             ChangedUserDepartment=self.instance.department,
-            title=u'Данные сотрудника %s на Mysite были изменены' % ChangedUserReference)
+            title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
 
 
-    def ChangedUserReference(self):
+    def GetChangedUserReference(self):
         model = self.Meta.model
         if self.is_bound:
             return models.FormReference(
@@ -70,15 +70,15 @@ class UserProfileForm(forms.ModelForm):
                 model.GetModelFieldByName('username'))
 
 
-def MakeMessage(ChangedForm, ChangedUser):
-    ChangedData = ChangedForm.changed_data
-    Message = _(u'the following data of User %s has been changed:\n') % (ChangedUser)
-    for FieldName in ChangedData:
-        if not (FieldName == u'skills'):
-            Message += GetModelFieldChange(ChangedForm, FieldName)
-    if u'skills' in ChangedData:
-        Message += GetSkillsChanges(ChangedForm.instance.skills, ChangedForm.ParseSkills())
-    return Message
+def MakeMessage(changed_form, changed_user):
+    changed_data = changed_form.changed_data
+    message = _(u'the following data of User %s has been changed:\n') % (changed_user)
+    for field_name in changed_data:
+        if not (field_name == u'skills'):
+            message += GetModelFieldChange(changed_form, field_name)
+    if u'skills' in changed_data:
+        message += GetSkillsChanges(changed_form.instance.skills, changed_form.ParseSkills())
+    return message
 
 
 def GetSkillsChanges(SkillsBefore, SkillsAfter):
