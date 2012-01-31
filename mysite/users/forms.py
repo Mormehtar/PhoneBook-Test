@@ -48,7 +48,7 @@ class UserProfileForm(forms.ModelForm):
         changed_user_reference = self.get_changed_user_reference()
         const_message_part = make_message(self, changed_user_reference)
 
-        tasks.MakeSending.delay(
+        tasks.make_sending.delay(
             ConstMessagePart=const_message_part,
             ChangedUserDepartment=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
