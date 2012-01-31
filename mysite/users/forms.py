@@ -26,15 +26,15 @@ class UserProfileForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
 
-        self.SendNotifications()
+        self.send_notifications()
 
-        self.instance.skills = self.ParseSkills()
+        self.instance.skills = self.parse_skills()
 
         super(UserProfileForm, self).save(*args, **kwargs)
         return self.instance
 
 
-    def ParseSkills(self):
+    def parse_skills(self):
         return [
             parsed_skills_with_empty_lines for parsed_skills_with_empty_lines in
                 (
@@ -44,9 +44,9 @@ class UserProfileForm(forms.ModelForm):
             if parsed_skills_with_empty_lines!=u''
         ]
 
-    def SendNotifications(self):
-        changed_user_reference = self.GetChangedUserReference()
-        const_message_part = MakeMessage(self, changed_user_reference)
+    def send_notifications(self):
+        changed_user_reference = self.get_changed_user_reference()
+        const_message_part = make_message(self, changed_user_reference)
 
         tasks.MakeSending.delay(
             ConstMessagePart=const_message_part,
@@ -54,7 +54,7 @@ class UserProfileForm(forms.ModelForm):
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
 
 
-    def GetChangedUserReference(self):
+    def get_changed_user_reference(self):
         model = self.Meta.model
         if self.is_bound:
             return models.FormReference(
@@ -70,26 +70,26 @@ class UserProfileForm(forms.ModelForm):
                 model.GetModelFieldByName('username'))
 
 
-def MakeMessage(changed_form, changed_user):
+def make_message(changed_form, changed_user):
     changed_data = changed_form.changed_data
     message = _(u'the following data of User %s has been changed:\n') % (changed_user)
     for field_name in changed_data:
         if not (field_name == u'skills'):
-            message += GetModelFieldChange(changed_form, field_name)
+            message += get_model_field_change(changed_form, field_name)
     if u'skills' in changed_data:
-        message += GetSkillsChanges(changed_form.instance.skills, changed_form.ParseSkills())
+        message += get_skills_changes(changed_form.instance.skills, changed_form.parse_skills())
     return message
 
 
-def GetSkillsChanges(skills_before, skills_after):
-    new_skills = GetSkillsDifference(skills_after, skills_before)
-    deleted_skills = GetSkillsDifference(skills_before, skills_after)
-    message = GetDeletedSkillsMessage(deleted_skills)
-    message += GetFinalSkillsMessageWithNew(new_skills, skills_after)
+def get_skills_changes(skills_before, skills_after):
+    new_skills = get_skills_difference(skills_after, skills_before)
+    deleted_skills = get_skills_difference(skills_before, skills_after)
+    message = get_deleted_skills_message(deleted_skills)
+    message += get_final_skills_message_with_new(new_skills, skills_after)
     return message
 
 
-def GetDeletedSkillsMessage(deleted_skills):
+def get_deleted_skills_message(deleted_skills):
     message = u''
     if len(deleted_skills) > 0:
         message = _(u'The following skills were deleted:\n')
@@ -98,7 +98,7 @@ def GetDeletedSkillsMessage(deleted_skills):
     return message
 
 
-def GetFinalSkillsMessageWithNew(new_skills, skills_after):
+def get_final_skills_message_with_new(new_skills, skills_after):
     message = u''
     if len(new_skills) > 0:
         message = _(u'Final list of skills is:\n')
@@ -110,15 +110,15 @@ def GetFinalSkillsMessageWithNew(new_skills, skills_after):
     return message
 
 
-def GetSkillsDifference (skills1, skills2):
+def get_skills_difference (skills1, skills2):
     return set(skills1) - set(skills2)
 
 
-def GetModelFieldChange(form, field_name):
+def get_model_field_change(form, field_name):
     return u'\t%s: %s\n' \
         % (form.instance.GetModelFieldByName(field_name).verbose_name,
            form.cleaned_data[field_name])
 
 
-class MongoSearchForm(forms.Form):
+class mongo_search_form(forms.Form):
     search = forms.CharField(max_length=255, label=_(u'Search skill'), required=False)

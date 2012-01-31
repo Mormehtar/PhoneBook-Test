@@ -75,8 +75,8 @@ class UserProfile(User):
         verbose_name_plural = _(u'empolyees')
 
 
-    def GetModelFieldByName(self, FieldName):
-        return self._meta.get_field_by_name(FieldName)[0]
+    def GetModelFieldByName(self, field_name):
+        return self._meta.get_field_by_name(field_name)[0]
 
 
     def __unicode__(self):
