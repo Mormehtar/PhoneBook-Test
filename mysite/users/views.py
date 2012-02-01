@@ -15,15 +15,15 @@ from django.template.context import RequestContext
 def index(request):
     render = {'form':MongoSearchForm}
     if request.method == 'POST':
-        Form = MongoSearchForm(request.POST)
-        if Form.is_valid():
-            Employees = FindEmloyeesBySkills(Form)
-            render = {'request':True, 'result':Employees, 'form':Form}
+        form = MongoSearchForm(request.POST)
+        if form.is_valid():
+            employees = find_emloyees_by_skills(form)
+            render = {'request':True, 'result':employees, 'form':form}
     return render_to_response('search_form.html', {'render':render}, context_instance=RequestContext(request))
 
 
 
-def FindEmloyeesBySkills(form):
+def find_emloyees_by_skills(form):
     cd = form.cleaned_data
     employees_in_mogodb_format = models.mongo_get_by_skill(cd['search'])
     employees = []
