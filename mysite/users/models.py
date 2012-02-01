@@ -53,14 +53,14 @@ class Position(models.Model):
 
 
 class UserProfile(User):
-    surname = models.CharField(max_length = 30, blank='true', null='true', verbose_name=_(u'Surname'))
+    surname = models.CharField(max_length = 30, blank=True, null=True, verbose_name=_(u'Surname'))
     mob_tel = models.CharField(
-        max_length = 30, blank='true', null='true',
+        max_length = 30, blank=True, null=True,
         verbose_name=_(u'Mobile telephone'),
         validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
     )
     work_tel = models.CharField(
-        max_length = 30, blank='true', null='true',
+        max_length = 30, blank=True, null=True,
         verbose_name=_(u'Work telephone'),
         validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
     )
