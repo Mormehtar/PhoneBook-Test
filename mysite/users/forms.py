@@ -37,10 +37,7 @@ class UserProfileForm(forms.ModelForm):
     def parse_skills(self):
         return [
             parsed_skills_with_empty_lines for parsed_skills_with_empty_lines in
-                (
-                    parsed_skills_with_whitespaces.strip(string.whitespace) for parsed_skills_with_whitespaces in
-                        self.cleaned_data['skills'].split(u'\n')
-                )
+                parse_string_splitting_by_symbol_and_removing_whitespaces(self.cleaned_data['skills'], u'\n')
             if parsed_skills_with_empty_lines!=u''
         ]
 
@@ -80,6 +77,9 @@ class UserProfileForm(forms.ModelForm):
             message += get_skills_changes(self.instance.skills, self.parse_skills())
         return message
 
+
+def parse_string_splitting_by_symbol_and_removing_whitespaces(str,symbol):
+    return [parsed_strs_with_whitespaces.strip(string.whitespace) for parsed_strs_with_whitespaces in str.split(symbol)]
 
 def get_skills_changes(skills_before, skills_after):
     new_skills = get_skills_difference(skills_after, skills_before)
