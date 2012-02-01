@@ -16,8 +16,4 @@ def make_sending(const_message_part, changed_user_department, title):
     for person in To:
         header = u'Уважаемый, %s, вы получили это письмо потому, что ' % person['person']
         message = header + const_message_part
-        async_send_email.delay(title, message, u'dont@reply.ua',person['email'])
-
-@task()
-def async_send_email(title,message,from_,to):
-    send_mail(title, message, from_,[to])
+        send_mail(title, message, u'dont@reply.ua',[person['email']])

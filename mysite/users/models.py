@@ -125,7 +125,7 @@ def get_list_of_consignees(user_department):
 
 
 def form_reference(last_name,first_name,surname,username):
-    if len(last_name)+len(first_name)+len(surname)>0 :
+    if len(last_name)+len(first_name)+len(surname) :
         reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
     else:
         reference = username
