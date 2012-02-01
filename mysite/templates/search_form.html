@@ -21,10 +21,10 @@
     {% if render.request %}
         {% if render.result %}
             <table id="request_result">
-            <tr><th>{% trans "Employee" %}</th><th>{% trans "Skills" %}</th></tr>
-            {% for employee in render.result %}
-                <tr><td>{{ employee.worker }}</td><td>{{ employee.skills }}</td></tr>
-            {% endfor %}
+                <tr class="request"><th class="request_th">{% trans "Employee" %}</th><th class="request_th">{% trans "Skills" %}</th></tr>
+                {% for employee in render.result %}
+                    <tr class="request"><td class="request_td">{{ employee.worker }}</td><td class="request_th">{{ employee.skills }}</td></tr>
+                {% endfor %}
             </table>
         {% else %}
             <p>{% trans "Nothing was found" %}</p>

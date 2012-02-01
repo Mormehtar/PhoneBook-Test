@@ -2,9 +2,23 @@
 {
     color: red;
 }
+
 #request_result
 {
-    spacing : 5px;
-    border : 1px;
-    padding : 5px;
+    border: 1px solid black;
+}
+.request
+{
+    border: 1px solid black;
+    padding: 5px;
+}
+.request_th
+{
+    border: 1px solid black;
+    padding: 5px;
+}
+.request_td
+{
+    border: 1px solid black;
+    padding: 5px;
 }
