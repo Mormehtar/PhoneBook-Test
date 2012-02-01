@@ -106,22 +106,22 @@ class UserProfile(User):
             self.set_password(password)
 
 
-def get_list_of_consignees_and_names(user_department):
-    consignees = get_list_of_consignees(user_department)
+def get_list_of_addressees_and_names(user_department):
+    addressees = get_list_of_addressees(user_department)
     return [{
-        'email': consignee.myemail,
-        'person':form_reference(consignee.last_name,consignee.first_name,consignee.surname,consignee.username)
-    } for consignee in consignees]
+        'email': addressee.myemail,
+        'person':form_reference(addressee.last_name,addressee.first_name,addressee.surname,addressee.username)
+    } for addressee in addressees]
 
 
-def get_list_of_consignees(user_department):
+def get_list_of_addressees(user_department):
     boss_names = set()
     for boss in Department.objects.all():
         boss_names.add(boss.head)
     colleagues = set(UserProfile.objects.filter(department=user_department))
-    consignees = (boss_names | colleagues)
-    consignees.discard(None) # On case of headless departments
-    return consignees
+    addressees = (boss_names | colleagues)
+    addressees.discard(None) # On case of headless departments
+    return addressees
 
 
 def form_reference(last_name,first_name,surname,username):

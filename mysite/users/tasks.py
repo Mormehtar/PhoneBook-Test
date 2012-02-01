@@ -12,7 +12,7 @@ from mysite.users import models
 
 @task()
 def make_sending(const_message_part, changed_user_department, title):
-    To = models.get_list_of_consignees_and_names(changed_user_department)
+    To = models.get_list_of_addressees_and_names(changed_user_department)
     for person in To:
         header = u'Уважаемый, %s, вы получили это письмо потому, что ' % person['person']
         message = header + const_message_part
