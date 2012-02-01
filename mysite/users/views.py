@@ -12,15 +12,6 @@ import pymongo
 
 from django.template.context import RequestContext
 
-class Empoyee():
-    worker = u''
-    skills = u''
-
-    def __init__(self, w, s):
-        self.worker = w
-        self.skills = s
-
-
 def index(request):
     render = {'form':MongoSearchForm}
     if request.method == 'POST':
@@ -38,9 +29,10 @@ def FindEmloyeesBySkills(form):
     employees = []
     for employee in employees_in_mogodb_format:
         try:
-            employees.append(
-                Empoyee(models.UserProfile.objects.get(username__exact=employee[0]),
-                        employee[1]))
+            employees.append({
+                'worker':models.UserProfile.objects.get(username__exact=employee[0]),
+                'skills':employee[1]
+            })
         except: # On case of MongoDB-SQLite3 bases inconsistency
             pass
     return employees
