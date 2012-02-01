@@ -1,0 +1,10 @@
+#errors
+{
+    color: red;
+}
+#request_result
+{
+    spacing : 5px;
+    border : 1px;
+    padding : 5px;
+}

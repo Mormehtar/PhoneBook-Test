@@ -136,8 +136,6 @@ INSTALLED_APPS = (
     'admin_tools.menu',
     'admin_tools.dashboard',
 
-    'django.contrib.staticfiles',
-
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -190,7 +188,6 @@ djcelery.setup_loader()
 
 CELERY_DISABLE_RATE_LIMITS = True
 CELERY_IGNORE_RESULT = True
-#CELERY_DEFAULT_RATE_LIMIT = '10/m'
 
 BROKER_HOST = "localhost"
 BROKER_PORT = 5672

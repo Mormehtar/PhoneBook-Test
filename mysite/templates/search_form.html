@@ -2,12 +2,13 @@
 <html>
     <head>
         <title>{% trans "Skilled employees search engine" %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}search_form.css" />
     </head>
     <body>
     <h2>{% trans "Skilled employees search engine" %}</h2>
 
     {% if render.form.errors %}
-        <p style="color: red;"> {% trans "Following errors were found:" %}</p>{{ render.form.errors }}
+        <p id="errors"> {% trans "Following errors were found:" %}</p>{{ render.form.errors }}
     {% endif %}
 
     <form action="." method="post"> {% csrf_token %}
@@ -19,7 +20,7 @@
 
     {% if render.request %}
         {% if render.result %}
-            <table cellspacing="5" border="1" cellpadding="5">
+            <table id="request_result">
             <tr><th>{% trans "Employee" %}</th><th>{% trans "Skills" %}</th></tr>
             {% for employee in render.result %}
                 <tr><td>{{ employee.worker }}</td><td>{{ employee.skills }}</td></tr>
