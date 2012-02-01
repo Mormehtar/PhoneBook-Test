@@ -10,6 +10,7 @@ from mysite.users.forms import mongo_search_form
 from mysite.users import models
 import pymongo
 
+from django.template.context import RequestContext
 
 class empoyee():
     worker = u''
@@ -31,14 +32,14 @@ def index(request):
                 'request':True,
                 'result':Employees,
                 'WayToAdmin':way_to_admin,
-            })
+            }, context_instance=RequestContext(request))
     else:
         return render_to_response('search_form.html', {
             'form':mongo_search_form,
             'request':False,
             'result':[],
             'WayToAdmin':way_to_admin,
-        })
+        }, context_instance=RequestContext(request))
 
 
 def FindEmloyeesBySkills(form):
