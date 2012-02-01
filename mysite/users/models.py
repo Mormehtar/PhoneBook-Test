@@ -15,8 +15,8 @@ import string
 
 WRONG_NUMBER = _(u'Wrong phone number')
 COUNTRY_CODE = r'(\+?\d)'
-CITY_CODE = r'(\(\d+\))'
-PHONE_NUMBER = r'((\d+[\s-]?)+)'
+CITY_CODE = r'(\(\d{1,5}\))'
+PHONE_NUMBER = r'((\d{1,3}[\s-]?){1,3})'
 CONCATENATOR = r'?\s*'
 PHONE_NUMBER_REGEXP = '^'\
                       + COUNTRY_CODE\
@@ -67,6 +67,7 @@ class UserProfile(User):
     myemail = models.EmailField(verbose_name=_(u'E-mail'))
     department = models.ForeignKey(Department, verbose_name=_(u'Department'))
     position = models.ForeignKey(Position, verbose_name=_(u'Position'))
+
     skills = []
 
 
@@ -105,23 +106,22 @@ class UserProfile(User):
             self.set_password(password)
 
 
-def get_list_of_addresses_and_names(user_department):
-    addressants = get_list_of_adressants(user_department)
+def get_list_of_consignees_and_names(user_department):
+    consignees = get_list_of_consignees(user_department)
     return [{
-        'email': addressant.myemail,
-        'person':form_reference(addressant.last_name,addressant.first_name,addressant.surname,addressant.username)
-    } for addressant in addressants]
+        'email': consignee.myemail,
+        'person':form_reference(consignee.last_name,consignee.first_name,consignee.surname,consignee.username)
+    } for consignee in consignees]
 
 
-def get_list_of_adressants(user_department):
-    bosses = Department.objects.all()
+def get_list_of_consignees(user_department):
     boss_names = set()
-    for boss in bosses:
+    for boss in Department.objects.all():
         boss_names.add(boss.head)
     colleagues = set(UserProfile.objects.filter(department=user_department))
-    addressants = (boss_names | colleagues)
-    addressants.discard(None) # On case of headless departments
-    return addressants
+    consignees = (boss_names | colleagues)
+    consignees.discard(None) # On case of headless departments
+    return consignees
 
 
 def form_reference(last_name,first_name,surname,username):

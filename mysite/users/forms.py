@@ -46,11 +46,11 @@ class UserProfileForm(forms.ModelForm):
 
     def send_notifications(self):
         changed_user_reference = self.get_changed_user_reference()
-        const_message_part = make_message(self, changed_user_reference)
+        const_message_part = self.make_message(changed_user_reference)
 
         tasks.make_sending.delay(
-            ConstMessagePart=const_message_part,
-            ChangedUserDepartment=self.instance.department,
+            const_message_part=const_message_part,
+            changed_user_department=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
 
 
@@ -70,15 +70,15 @@ class UserProfileForm(forms.ModelForm):
                 model.get_model_field_by_name('username'))
 
 
-def make_message(changed_form, changed_user):
-    changed_data = changed_form.changed_data
-    message = _(u'the following data of User %s has been changed:\n') % (changed_user)
-    for field_name in changed_data:
-        if not (field_name == u'skills'):
-            message += get_model_field_change(changed_form, field_name)
-    if u'skills' in changed_data:
-        message += get_skills_changes(changed_form.instance.skills, changed_form.parse_skills())
-    return message
+    def make_message(self, changed_user):
+        changed_data = self.changed_data
+        message = _(u'the following data of User %s has been changed:\n') % (changed_user)
+        for field_name in changed_data:
+            if not (field_name == u'skills'):
+                message += get_model_field_change(self, field_name)
+        if u'skills' in changed_data:
+            message += get_skills_changes(self.instance.skills, self.parse_skills())
+        return message
 
 
 def get_skills_changes(skills_before, skills_after):
