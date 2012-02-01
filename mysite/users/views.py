@@ -6,13 +6,13 @@ from os import path
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
 
-from mysite.users.forms import mongo_search_form
+from mysite.users.forms import MongoSearchForm
 from mysite.users import models
 import pymongo
 
 from django.template.context import RequestContext
 
-class empoyee():
+class Empoyee():
     worker = u''
     skills = u''
 
@@ -22,24 +22,14 @@ class empoyee():
 
 
 def index(request):
-    way_to_admin = path.join(request.path + 'admin/')
+    render = {'form':MongoSearchForm}
     if request.method == 'POST':
-        form = mongo_search_form(request.POST)
-        if form.is_valid():
-            Employees = FindEmloyeesBySkills(form)
-            return render_to_response('search_form.html', {
-                'form':mongo_search_form,
-                'request':True,
-                'result':Employees,
-                'WayToAdmin':way_to_admin,
-            }, context_instance=RequestContext(request))
-    else:
-        return render_to_response('search_form.html', {
-            'form':mongo_search_form,
-            'request':False,
-            'result':[],
-            'WayToAdmin':way_to_admin,
-        }, context_instance=RequestContext(request))
+        Form = MongoSearchForm(request.POST)
+        if Form.is_valid():
+            Employees = FindEmloyeesBySkills(Form)
+            render = {'request':True, 'result':Employees, 'form':Form}
+    return render_to_response('search_form.html', {'render':render}, context_instance=RequestContext(request))
+
 
 
 def FindEmloyeesBySkills(form):
@@ -49,7 +39,7 @@ def FindEmloyeesBySkills(form):
     for employee in employees_in_mogodb_format:
         try:
             employees.append(
-                empoyee(models.UserProfile.objects.get(username__exact=employee[0]),
+                Empoyee(models.UserProfile.objects.get(username__exact=employee[0]),
                         employee[1]))
         except: # On case of MongoDB-SQLite3 bases inconsistency
             pass

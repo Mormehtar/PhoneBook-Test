@@ -120,5 +120,5 @@ def get_model_field_change(form, field_name):
            form.cleaned_data[field_name])
 
 
-class mongo_search_form(forms.Form):
+class MongoSearchForm(forms.Form):
     search = forms.CharField(max_length=255, label=_(u'Search skill'), required=False)

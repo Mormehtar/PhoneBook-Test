@@ -6,21 +6,22 @@
     <body>
     <h2>{% trans "Skilled employees search engine" %}</h2>
 
-    {% if form.errors %}
-        <p style="color: red;"> {% trans "Обнаружены следующие ошибки:" %}</p>{{ form.errors }}
+    {% if render.form.errors %}
+        <p style="color: red;"> {% trans "Following errors were found:" %}</p>{{ render.form.errors }}
     {% endif %}
 
     <form action="." method="post"> {% csrf_token %}
         <table>
-            {{ form.as_table }}
+            {{ render.form.as_table }}
         </table>
         <input type="submit" value={% trans "Search" %} />
     </form>
-    {% if request %}
-        {% if result %}
+
+    {% if render.request %}
+        {% if render.result %}
             <table cellspacing="5" border="1" cellpadding="5">
             <tr><th>{% trans "Employee" %}</th><th>{% trans "Skills" %}</th></tr>
-            {% for employee in result %}
+            {% for employee in render.result %}
                 <tr><td>{{ employee.worker }}</td><td>{{ employee.skills }}</td></tr>
             {% endfor %}
             </table>
@@ -29,6 +30,7 @@
         {% endif %}
     {% endif %}
 
-    <a href="{{ WayToAdmin }}">{% trans "Enter base" %}</a>
+    <br>
+    <a href="{% url admin:index %}">{% trans "Enter base" %}</a>
     </body>
 </html>
