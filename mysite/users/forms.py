@@ -24,11 +24,8 @@ class UserProfileAdminForm(forms.ModelForm):
 
 
     def save(self, *args, **kwargs):
-
         self.send_notifications()
-
         self.instance.skills = self.parse_skills()
-
         return super(UserProfileAdminForm, self).save(*args, **kwargs)
 
 
@@ -49,7 +46,6 @@ class UserProfileAdminForm(forms.ModelForm):
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
 
 
-    #noinspection PyCallByClass
     def get_changed_user_reference(self):
         if self.is_bound:
             return models.form_reference(
@@ -116,7 +112,7 @@ def get_skills_difference (skills1, skills2):
 def get_model_field_change(form, field_name):
     return u'\t%s: %s\n' \
         % (form.instance.get_model_field_by_name(field_name).verbose_name,
-           form.cleaned_data[field_name])
+           form.cleaned_data.get(field_name))
 
 
 class MongoSearchForm(forms.Form):

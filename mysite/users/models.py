@@ -125,9 +125,12 @@ def get_list_of_addressees(user_department):
 
 
 def form_reference(last_name,first_name,surname,username):
-    if len(last_name)+len(first_name)+len(surname) :
-        reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
-    else:
+    try:
+        if len(last_name)+len(first_name)+len(surname) :
+            reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
+        else:
+            reference = username
+    except:
         reference = username
     return reference
 
@@ -155,4 +158,5 @@ def mongo_get_by_skill(skill):
     retvalue = []
     for doc in result:
         retvalue.append([doc[u'id'],', '.join(doc[u'skills'])])
+    connection.end_request()
     return retvalue
