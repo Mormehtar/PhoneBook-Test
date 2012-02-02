@@ -17,7 +17,6 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': 'c:/db/db',
         'NAME': path.join(path.dirname(__file__),'db.sqlite3'),             # Or path to database file if using sqlite3.
         'USER': '',              # Not used with sqlite3.
         'PASSWORD': '',          # Not used with sqlite3.
@@ -194,3 +193,5 @@ BROKER_PORT = 5672
 BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
+
+MONGODB_DOCUMENT = 'madskillz'

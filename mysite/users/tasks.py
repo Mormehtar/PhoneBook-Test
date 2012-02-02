@@ -2,13 +2,9 @@
 
 from celery.task import task
 
-from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
 
 from mysite.users import models
-#from mysite.users import forms
-
-#from mysite.users import models
 
 @task()
 def make_sending(const_message_part, changed_user_department, title):

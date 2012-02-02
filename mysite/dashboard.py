@@ -29,7 +29,6 @@ class CustomIndexDashboard(Dashboard):
             exclude=('djcelery.*','django.contrib.*'),
         ))
 
-        # append a recent actions module
         self.children.append(modules.RecentActions(_('Recent Actions'), 5))
 
 
@@ -38,7 +37,6 @@ class CustomAppIndexDashboard(AppIndexDashboard):
     Custom app index dashboard for mysite.
     """
 
-    # we disable title because its redundant with the model list module
     title = ''
 
     def __init__(self, *args, **kwargs):

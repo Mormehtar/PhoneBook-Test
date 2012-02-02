@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-# Create your views here.
 from os import path
 
 from django.shortcuts import render_to_response

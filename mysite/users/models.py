@@ -3,10 +3,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import models as auth_models
-from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
+from mysite.settings import MONGODB_DOCUMENT
 import pymongo
 
 import string
@@ -134,7 +134,7 @@ def form_reference(last_name,first_name,surname,username):
 
 def mongo_read(name):
     connection = pymongo.Connection()
-    temp_skills = connection.test_db['madskillz'].find_one({u'id':name})
+    temp_skills = connection.test_db[MONGODB_DOCUMENT].find_one({u'id':name})
     connection.end_request()
     if temp_skills:
         return temp_skills[u'skills']
@@ -144,14 +144,14 @@ def mongo_read(name):
 
 def mongo_write(name, skills):
     connection = pymongo.Connection()
-    connection.test_db['madskillz'].find_and_modify(
+    connection.test_db[MONGODB_DOCUMENT].find_and_modify(
         query={u'id':name},upsert=True,update={'$set' : {u'skills' : skills}})
     connection.end_request()
 
 
 def mongo_get_by_skill(skill):
     connection = pymongo.Connection()
-    result = connection.test_db['madskillz'].find({u'skills':skill})
+    result = connection.test_db[MONGODB_DOCUMENT].find({u'skills':skill})
     retvalue = []
     for doc in result:
         retvalue.append([doc[u'id'],', '.join(doc[u'skills'])])
