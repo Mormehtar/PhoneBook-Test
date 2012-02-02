@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 import string
-import pymongo
 
 from django import forms
 from django.utils.translation import ugettext as _
@@ -10,7 +9,7 @@ from mysite.users import models
 from mysite.users import tasks
 
 
-class UserProfileForm(forms.ModelForm):
+class UserProfileAdminForm(forms.ModelForm):
     class Meta:
         model = models.UserProfile
         fields = ['username', 'last_name', 'first_name', 'surname', 'myemail',
@@ -20,7 +19,7 @@ class UserProfileForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
         self.initial[u'skills'] = u'\n'.join(self.instance.skills)
 
 
@@ -30,8 +29,7 @@ class UserProfileForm(forms.ModelForm):
 
         self.instance.skills = self.parse_skills()
 
-        super(UserProfileForm, self).save(*args, **kwargs)
-        return self.instance
+        return super(UserProfileAdminForm, self).save(*args, **kwargs)
 
 
     def parse_skills(self):
@@ -51,8 +49,8 @@ class UserProfileForm(forms.ModelForm):
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
 
 
+    #noinspection PyCallByClass
     def get_changed_user_reference(self):
-        model = self.Meta.model
         if self.is_bound:
             return models.form_reference(
                 self.instance.last_name,
@@ -60,6 +58,7 @@ class UserProfileForm(forms.ModelForm):
                 self.instance.surname,
                 self.instance.username)
         else:
+            model = self.Meta.model
             return models.form_reference(
                 model.get_model_field_by_name('last_name'),
                 model.get_model_field_by_name('first_name'),
@@ -69,7 +68,7 @@ class UserProfileForm(forms.ModelForm):
 
     def make_message(self, changed_user):
         changed_data = self.changed_data
-        message = _(u'the following data of User %s has been changed:\n') % (changed_user)
+        message = _(u'the following data of User %s has been changed:\n') % changed_user
         for field_name in changed_data:
             if not (field_name == u'skills'):
                 message += get_model_field_change(self, field_name)

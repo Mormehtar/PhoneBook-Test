@@ -12,7 +12,7 @@ admin.site.app_index = trans.I18nLabel(admin.site.app_index).index()
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    form = forms.UserProfileForm
+    form = forms.UserProfileAdminForm
     search_fields = ('first_name','last_name','surname')
     list_filter = ('position',)
 
