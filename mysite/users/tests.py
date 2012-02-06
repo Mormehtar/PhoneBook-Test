@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 
 """
 
-#from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.webdriver import WebDriver
 #from django.test import LiveServerTestCase
 
 from django.test.client import Client
@@ -24,6 +24,7 @@ from mysite import settings
 from mysite.users import models
 from mysite.users import forms
 from mysite.users import tasks
+
 
 def create_test_base():
 
@@ -125,7 +126,7 @@ def create_test_base():
         'position': position1.id
     }
 
-    settings.DECLARED_MAILING_FUNCTION = tasks.make_sending
+    settings.CELERY_ASYNC_MAILING_FUNCTION = tasks.make_async_sending
 
     return {
         'data_for_new_user_in_empty_department':data_for_new_user_in_empty_department,
@@ -137,7 +138,7 @@ def clear_test_base():
     connection.test_db[settings.MONGODB_DOCUMENT].remove()
     connection.end_request()
     settings.MONGODB_DOCUMENT = 'madskillz'
-    settings.DECLARED_MAILING_FUNCTION = tasks.make_sending.delay
+    settings.CELERY_ASYNC_MAILING_FUNCTION = tasks.make_async_sending.delay
 
 def search_response(test, search):
     response = test.client.post('', {'search': search})
@@ -214,8 +215,8 @@ class TestSite(TestCase):
 #
 #    def test_login(self):
 #        self.assertTrue(self.client.login(username=u'NamelessHeadOfCommon', password='password'), 'Login failed!')
-#
-#
+
+
 #    def test_position1_work(self):
 ##        print self.client.login(username=u'NamelessHeadOfCommon', password='password')
 #        c = Client(enforce_csrf_checks = True, follow = True)
@@ -234,9 +235,9 @@ class TestSite(TestCase):
 #        print response
 #        print
 #        print
-#
-#
-#
+
+
+
 #        self.assertEqual(response.status_code, 200, "Position 1 don't answer")
 
 
@@ -256,12 +257,10 @@ class TestSite(TestCase):
 #@skip('Too low abstraction')
 class TestForms(TestCase):
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         self.new_users = create_test_base()
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         clear_test_base()
 
 

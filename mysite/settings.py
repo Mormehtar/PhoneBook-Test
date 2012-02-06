@@ -199,4 +199,4 @@ BROKER_VHOST = "/"
 
 MONGODB_DOCUMENT = 'madskillz'
 
-DECLARED_MAILING_FUNCTION = tasks.make_sending.delay
+CELERY_ASYNC_MAILING_FUNCTION = tasks.make_async_sending.delay
