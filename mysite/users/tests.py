@@ -8,8 +8,8 @@ Replace this with more appropriate tests for your application.
 
 """
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-from django.test import LiveServerTestCase
+#from selenium.webdriver.firefox.webdriver import WebDriver
+#from django.test import LiveServerTestCase
 
 from django.test.client import Client
 
@@ -23,6 +23,7 @@ from django.utils.unittest.case import skip
 from mysite import settings
 from mysite.users import models
 from mysite.users import forms
+from mysite.users import tasks
 
 def create_test_base():
 
@@ -124,6 +125,8 @@ def create_test_base():
         'position': position1.id
     }
 
+    tasks.celery_mailing = tasks.make_async_sending
+
     return {
         'data_for_new_user_in_empty_department':data_for_new_user_in_empty_department,
         'data_for_new_user_in_common_department':data_for_new_user_in_common_department}
@@ -134,6 +137,7 @@ def clear_test_base():
     connection.test_db[settings.MONGODB_DOCUMENT].remove()
     connection.end_request()
     settings.MONGODB_DOCUMENT = 'madskillz'
+    tasks.celery_mailing = tasks.make_async_sending.delay
 
 def search_response(test, search):
     response = test.client.post('', {'search': search})

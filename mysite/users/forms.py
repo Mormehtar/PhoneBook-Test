@@ -40,7 +40,7 @@ class UserProfileAdminForm(forms.ModelForm):
         changed_user_reference = self.get_changed_user_reference()
         const_message_part = self.make_message(changed_user_reference)
 
-        tasks.make_sending(
+        tasks.celery_mailing(
             const_message_part=const_message_part,
             changed_user_department=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)

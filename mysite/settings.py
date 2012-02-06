@@ -4,8 +4,6 @@
 from os import path
 import djcelery
 
-from mysite.users import tasks
-
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -198,5 +196,3 @@ BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 
 MONGODB_DOCUMENT = 'madskillz'
-
-CELERY_ASYNC_MAILING_FUNCTION = tasks.make_async_sending.delay
