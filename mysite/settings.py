@@ -4,6 +4,8 @@
 from os import path
 import djcelery
 
+from mysite.users import tasks
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -196,3 +198,5 @@ BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 
 MONGODB_DOCUMENT = 'madskillz'
+
+DECLARED_MAILING_FUNCTION = tasks.make_sending.delay

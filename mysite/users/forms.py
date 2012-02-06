@@ -6,7 +6,7 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from mysite.users import models
-from mysite.users import tasks
+from mysite.settings import DECLARED_MAILING_FUNCTION
 
 
 class UserProfileAdminForm(forms.ModelForm):
@@ -40,7 +40,7 @@ class UserProfileAdminForm(forms.ModelForm):
         changed_user_reference = self.get_changed_user_reference()
         const_message_part = self.make_message(changed_user_reference)
 
-        tasks.make_sending.delay(
+        DECLARED_MAILING_FUNCTION(
             const_message_part=const_message_part,
             changed_user_department=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)

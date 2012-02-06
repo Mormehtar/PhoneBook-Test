@@ -8,8 +8,8 @@ Replace this with more appropriate tests for your application.
 
 """
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-from django.test import LiveServerTestCase
+#from selenium.webdriver.firefox.webdriver import WebDriver
+#from django.test import LiveServerTestCase
 
 from django.test.client import Client
 
@@ -23,6 +23,7 @@ from django.utils.unittest.case import skip
 from mysite import settings
 from mysite.users import models
 from mysite.users import forms
+from mysite.users import tasks
 
 def create_test_base():
 
@@ -124,6 +125,8 @@ def create_test_base():
         'position': position1.id
     }
 
+    settings.DECLARED_MAILING_FUNCTION = tasks.make_sending
+
     return {
         'data_for_new_user_in_empty_department':data_for_new_user_in_empty_department,
         'data_for_new_user_in_common_department':data_for_new_user_in_common_department}
@@ -134,42 +137,45 @@ def clear_test_base():
     connection.test_db[settings.MONGODB_DOCUMENT].remove()
     connection.end_request()
     settings.MONGODB_DOCUMENT = 'madskillz'
+    settings.DECLARED_MAILING_FUNCTION = tasks.make_sending.delay
 
 def search_response(test, search):
     response = test.client.post('', {'search': search})
     return response.context['render']
 
 
-class MySeleniumTests(LiveServerTestCase):
-    fixtures = ['user-data.json']
-
-    @classmethod
-    def setUpClass(cls):
-        cls.new_users = create_test_base()
-        cls.selenium = WebDriver()
-        super(MySeleniumTests, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        clear_test_base()
-        super(MySeleniumTests, cls).tearDownClass()
-        cls.selenium.quit()
-
-    def test_login(self):
-        self.selenium.get('%s%s' % (self.live_server_url, '/admin/'))
-        username_input = self.selenium.find_element_by_name("username")
-        username_input.send_keys(u'NamelessHeadOfCommon')
-        password_input = self.selenium.find_element_by_name("password")
-        password_input.send_keys('password')
-        self.selenium.find_element_by_xpath('//input[@value="Войти"]').click()
+#class MySeleniumTests(LiveServerTestCase):
+#    fixtures = ['user-data.json']
+#
+#    @classmethod
+#    def setUpClass(cls):
+#        cls.new_users = create_test_base()
+#        cls.selenium = WebDriver()
+#        super(MySeleniumTests, cls).setUpClass()
+#
+#    @classmethod
+#    def tearDownClass(cls):
+#        clear_test_base()
+#        super(MySeleniumTests, cls).tearDownClass()
+#        cls.selenium.quit()
+#
+#    def test_login(self):
+#        self.selenium.get('%s%s' % (self.live_server_url, '/admin/'))
+#        username_input = self.selenium.find_element_by_name("username")
+#        username_input.send_keys(u'NamelessHeadOfCommon')
+#        password_input = self.selenium.find_element_by_name("password")
+#        password_input.send_keys('password')
+#        self.selenium.find_element_by_xpath('//input[@value="Войти"]').click()
 
 
 class TestSite(TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         self.new_users = create_test_base()
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         clear_test_base()
 
 
@@ -196,42 +202,42 @@ class TestSite(TestCase):
         self.assertNotIn('result',response.context['render'],'Wrong start page')
 
 
-    def test_admin_work(self):
-        response = self.client.get('/admin/')
-        self.assertEqual(response.status_code, 200, "Admin doesn't answer")
-
-
-    def test_positions_work(self):
-        response = self.client.get('/admin/users/position/')
-        self.assertEqual(response.status_code, 200, "Positions don't answer")
-
-
-    def test_login(self):
-        self.assertTrue(self.client.login(username=u'NamelessHeadOfCommon', password='password'), 'Login failed!')
-
-
-    def test_position1_work(self):
-#        print self.client.login(username=u'NamelessHeadOfCommon', password='password')
-        c = Client(enforce_csrf_checks = True, follow = True)
-        response = c.post('/admin/', {'username':u'NamelessHeadOfCommon', 'password':'password'})
-        print
-        print
-        print response.context
-        print
-        print
-        response = c.get('/admin/users/position/1/')
-        print
-        print
-        print response.context
-        print
-        print
-        print response
-        print
-        print
-
-
-
-        self.assertEqual(response.status_code, 200, "Position 1 don't answer")
+#    def test_admin_work(self):
+#        response = self.client.get('/admin/')
+#        self.assertEqual(response.status_code, 200, "Admin doesn't answer")
+#
+#
+#    def test_positions_work(self):
+#        response = self.client.get('/admin/users/position/')
+#        self.assertEqual(response.status_code, 200, "Positions don't answer")
+#
+#
+#    def test_login(self):
+#        self.assertTrue(self.client.login(username=u'NamelessHeadOfCommon', password='password'), 'Login failed!')
+#
+#
+#    def test_position1_work(self):
+##        print self.client.login(username=u'NamelessHeadOfCommon', password='password')
+#        c = Client(enforce_csrf_checks = True, follow = True)
+#        response = c.post('/admin/', {'username':u'NamelessHeadOfCommon', 'password':'password'})
+#        print
+#        print
+#        print response.context
+#        print
+#        print
+#        response = c.get('/admin/users/position/1/')
+#        print
+#        print
+#        print response.context
+#        print
+#        print
+#        print response
+#        print
+#        print
+#
+#
+#
+#        self.assertEqual(response.status_code, 200, "Position 1 don't answer")
 
 
 #    def test_departments_work(self):
@@ -247,13 +253,15 @@ class TestSite(TestCase):
 
 
 
-@skip('Too low abstraction')
+#@skip('Too low abstraction')
 class TestForms(TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         self.new_users = create_test_base()
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         clear_test_base()
 
 
