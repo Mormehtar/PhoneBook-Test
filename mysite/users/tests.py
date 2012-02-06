@@ -175,6 +175,7 @@ class TestSite(TestCase):
         self.assertNotIn('result',response.context['render'],'Wrong start page')
 
 
+
 class TestForms(TestCase):
 
 
