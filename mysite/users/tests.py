@@ -8,17 +8,11 @@ Replace this with more appropriate tests for your application.
 
 """
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-#from django.test import LiveServerTestCase
-
-from django.test.client import Client
-
 from django.test import TestCase
 from django.core import mail
 
 import pymongo
 import time
-from django.utils.unittest.case import skip
 
 from mysite import settings
 from mysite.users import models
@@ -145,30 +139,6 @@ def search_response(test, search):
     return response.context['render']
 
 
-#class MySeleniumTests(LiveServerTestCase):
-#    fixtures = ['user-data.json']
-#
-#    @classmethod
-#    def setUpClass(cls):
-#        cls.new_users = create_test_base()
-#        cls.selenium = WebDriver()
-#        super(MySeleniumTests, cls).setUpClass()
-#
-#    @classmethod
-#    def tearDownClass(cls):
-#        clear_test_base()
-#        super(MySeleniumTests, cls).tearDownClass()
-#        cls.selenium.quit()
-#
-#    def test_login(self):
-#        self.selenium.get('%s%s' % (self.live_server_url, '/admin/'))
-#        username_input = self.selenium.find_element_by_name("username")
-#        username_input.send_keys(u'NamelessHeadOfCommon')
-#        password_input = self.selenium.find_element_by_name("password")
-#        password_input.send_keys('password')
-#        self.selenium.find_element_by_xpath('//input[@value="Войти"]').click()
-
-
 class TestSite(TestCase):
 
     @classmethod
@@ -203,58 +173,6 @@ class TestSite(TestCase):
         self.assertNotIn('result',response.context['render'],'Wrong start page')
 
 
-#    def test_admin_work(self):
-#        response = self.client.get('/admin/')
-#        self.assertEqual(response.status_code, 200, "Admin doesn't answer")
-#
-#
-#    def test_positions_work(self):
-#        response = self.client.get('/admin/users/position/')
-#        self.assertEqual(response.status_code, 200, "Positions don't answer")
-#
-#
-#    def test_login(self):
-#        self.assertTrue(self.client.login(username=u'NamelessHeadOfCommon', password='password'), 'Login failed!')
-
-
-#    def test_position1_work(self):
-##        print self.client.login(username=u'NamelessHeadOfCommon', password='password')
-#        c = Client(enforce_csrf_checks = True, follow = True)
-#        response = c.post('/admin/', {'username':u'NamelessHeadOfCommon', 'password':'password'})
-#        print
-#        print
-#        print response.context
-#        print
-#        print
-#        response = c.get('/admin/users/position/1/')
-#        print
-#        print
-#        print response.context
-#        print
-#        print
-#        print response
-#        print
-#        print
-
-
-
-#        self.assertEqual(response.status_code, 200, "Position 1 don't answer")
-
-
-#    def test_departments_work(self):
-#        response = self.client.get('/admin/users/department/')
-#        self.assertEqual(response.status_code, 200, "Departments don't answer")
-#
-#    def test_department1_work(self):
-#        print self.client.login(username=u'NamelessHeadOfCommon', password='password')
-#        response = self.client.get('/admin/users/department/1/')
-#        print response.context
-#        self.assertEqual(response.status_code, 200, "Department 1 don't answer")
-
-
-
-
-#@skip('Too low abstraction')
 class TestForms(TestCase):
 
     def setUp(self):
