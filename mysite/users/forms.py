@@ -76,6 +76,7 @@ class UserProfileAdminForm(forms.ModelForm):
 def parse_string_splitting_by_symbol_and_removing_whitespaces(str,symbol):
     return [parsed_strs_with_whitespaces.strip(string.whitespace) for parsed_strs_with_whitespaces in str.split(symbol)]
 
+
 def get_skills_changes(skills_before, skills_after):
     new_skills = get_skills_difference(skills_after, skills_before)
     deleted_skills = get_skills_difference(skills_before, skills_after)

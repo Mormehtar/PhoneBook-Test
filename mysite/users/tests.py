@@ -141,9 +141,11 @@ def search_response(test, search):
 
 class TestSite(TestCase):
 
+
     @classmethod
     def setUpClass(cls):
         self.new_users = create_test_base()
+
 
     @classmethod
     def tearDownClass(cls):
@@ -175,8 +177,10 @@ class TestSite(TestCase):
 
 class TestForms(TestCase):
 
+
     def setUp(self):
         self.new_users = create_test_base()
+
 
     def tearDown(self):
         clear_test_base()

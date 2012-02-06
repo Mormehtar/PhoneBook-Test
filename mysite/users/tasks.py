@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from mysite.users import models
 from mysite.settings import CELERY_ASYNC_MAILING_FUNCTION
 
+
 def make_sending(const_message_part, changed_user_department, title):
     CELERY_ASYNC_MAILING_FUNCTION(const_message_part, changed_user_department, title)
 
