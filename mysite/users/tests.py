@@ -132,17 +132,16 @@ def clear_test_base():
     settings.MONGODB_DOCUMENT = 'madskillz'
     tasks.celery_mailing = tasks.make_async_sending.delay
 
+
 def search_response(test, search):
     response = test.client.post('', {'search': search})
     return response.context['render']
-
 
 
 TEMPLATE_MESSAGE = ur"""Уважаемый, %s, вы получили это письмо потому, что the following data of User %s has been changed:%s
 The following skills were deleted:%s
 Final list of skills is:%s
 """
-
 def get_change_mail_body(address, changeduser, strlist):
     first_recipient = models.UserProfile.objects.get(myemail=address)
     return TEMPLATE_MESSAGE % (
@@ -246,20 +245,23 @@ class TestForms(TestCase):
                                             u'nameless@head.com',
                                             u'petr@petrov.com'])
 
+
     def template_change_mailing_test(self, changeddata, uesrname, adresslist, changestrings):
         mail.outbox = []
+
         user = models.UserProfile.objects.get(username=uesrname)
         save_form(make_changed_form(
             forms.UserProfileAdminForm,
             user,
             changeddata))
+
         self.check_mailing_list_recipients(adresslist)
+
         self.assertEqual(mail.outbox[0].body,get_change_mail_body(mail.outbox[0].to[0],
                                                                   models.form_reference(
                                                                       user.last_name, user.first_name,
                                                                       user.surname, user.username),
                                                                   changestrings))
-
 
 
     def test_employee_in_common_department_change_mailing(self):
@@ -278,6 +280,7 @@ class TestForms(TestCase):
             [u'nameless@head.com', u'petr@petrov.com'],
             [u'\n\tWork telephone: +7(123)123-45-67', u'\n\t3', u'\n\t1 (added!)\n\t2\n\t4 (added!)']
         )
+
 
 class TestTelRegExp(TestCase):
 
