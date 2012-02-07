@@ -15,7 +15,8 @@ class UserProfileAdminForm(forms.ModelForm):
         fields = ['username', 'last_name', 'first_name', 'surname', 'myemail',
                   'mob_tel', 'work_tel', 'department', 'position', 'is_superuser']
 
-    skills = forms.CharField(max_length=255, label=_(u'MadSkillz'), widget=forms.Textarea(), required=False, help_text=_(u'Each skill from new line'))
+    skills = forms.CharField(max_length=255, label=_(u'MadSkillz'), widget=forms.Textarea(), required=False, 
+                             help_text=_(u'Each skill from new line'))
 
 
     def __init__(self, *args, **kwargs):
@@ -33,7 +34,7 @@ class UserProfileAdminForm(forms.ModelForm):
         return [
             parsed_skills_with_empty_lines for parsed_skills_with_empty_lines in
                 parse_string_splitting_by_symbol_and_removing_whitespaces(self.cleaned_data['skills'], u'\n')
-            if parsed_skills_with_empty_lines!=u''
+            if parsed_skills_with_empty_lines != u''
         ]
 
     def send_notifications(self):
@@ -43,7 +44,8 @@ class UserProfileAdminForm(forms.ModelForm):
         tasks.celery_mailing(
             const_message_part=const_message_part,
             changed_user_department=self.instance.department,
-            title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference)
+            title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference
+        )
 
 
     def get_changed_user_reference(self):
@@ -59,7 +61,8 @@ class UserProfileAdminForm(forms.ModelForm):
                 model.get_model_field_by_name('last_name'),
                 model.get_model_field_by_name('first_name'),
                 model.get_model_field_by_name('surname'),
-                model.get_model_field_by_name('username'))
+                model.get_model_field_by_name('username')
+            )
 
 
     def make_message(self, changed_user):

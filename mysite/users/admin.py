@@ -13,8 +13,8 @@ admin.site.app_index = trans.I18nLabel(admin.site.app_index).index()
 
 class UserProfileAdmin(admin.ModelAdmin):
     form = forms.UserProfileAdminForm
-    search_fields = ('first_name','last_name','surname')
-    list_filter = ('position',)
+    search_fields = ('first_name', 'last_name', 'surname')
+    list_filter = ('position', )
 
 
 class DepartmentAdmin(admin.ModelAdmin):
@@ -23,4 +23,4 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 admin.site.register(models.UserProfile, UserProfileAdmin)
 admin.site.register(models.Position)
-admin.site.register(models.Department,DepartmentAdmin)
+admin.site.register(models.Department, DepartmentAdmin)
