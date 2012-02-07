@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 16:41+0400\n"
+"POT-Creation-Date: 2012-02-07 14:45+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,23 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: dashboard.py:28 menu.py:25
+#: dashboard.py:28 menu.py:27
 msgid "Applications"
 msgstr "Приложения"
 
-#: dashboard.py:33 dashboard.py:51
+#: dashboard.py:32 dashboard.py:49
 msgid "Recent Actions"
 msgstr "Последние действия"
 
-#: menu.py:21
+#: menu.py:23
 msgid "Return to site"
 msgstr "Вернуться к поиску"
 
-#: menu.py:22
+#: menu.py:24
 msgid "Dashboard"
 msgstr "Панель управления"
 
-#: menu.py:29
+#: menu.py:31
 msgid "Administration"
 msgstr "Администрирование"
 
@@ -64,27 +64,31 @@ msgstr "Выбрать %s для изменения"
 msgid "%s administration"
 msgstr "%s управление"
 
-#: templates/search_form.html:4 templates/search_form.html.py:7
+#: templates/search_form.html:4 templates/search_form.html.py:8
 msgid "Skilled employees search engine"
 msgstr "Система поиска умелых сотрудников"
 
-#: templates/search_form.html:17
+#: templates/search_form.html:11
+msgid "Following errors were found:"
+msgstr "Найдены следующие ошибки:"
+
+#: templates/search_form.html:18
 msgid "Search"
 msgstr "Искать"
 
-#: templates/search_form.html:22
+#: templates/search_form.html:24
 msgid "Employee"
 msgstr "Сотрудник"
 
-#: templates/search_form.html:22
+#: templates/search_form.html:24
 msgid "Skills"
 msgstr "Навыки"
 
-#: templates/search_form.html:29
+#: templates/search_form.html:30
 msgid "Nothing was found"
 msgstr "Никого не найдено"
 
-#: templates/search_form.html:33
+#: templates/search_form.html:35
 msgid "Enter base"
 msgstr "Перейти в базу"
 
@@ -104,32 +108,32 @@ msgstr "Изменить"
 msgid "Users"
 msgstr "Пользователи"
 
-#: users/forms.py:19
+#: users/forms.py:18
 msgid "MadSkillz"
 msgstr "Навыки"
 
-#: users/forms.py:19
+#: users/forms.py:18
 msgid "Each skill from new line"
 msgstr "Каждый навык с новой строки"
 
-#: users/forms.py:73
+#: users/forms.py:67
 #, python-format
 msgid "the following data of User %s has been changed:\n"
 msgstr "нижеследующие сведения о пользователе %s были изменены:\n"
 
-#: users/forms.py:93
+#: users/forms.py:91
 msgid "The following skills were deleted:\n"
 msgstr "Следующие навыки были удалены:\n"
 
-#: users/forms.py:102
+#: users/forms.py:100
 msgid "Final list of skills is:\n"
 msgstr "Результирующий список навыков:\n"
 
-#: users/forms.py:106
+#: users/forms.py:104
 msgid " (added!)"
 msgstr " (добавлен!)"
 
-#: users/forms.py:122
+#: users/forms.py:120
 msgid "Search skill"
 msgstr "Искать навык"
 
@@ -185,15 +189,15 @@ msgstr "Электронная почта"
 msgid "Department"
 msgstr "отдел"
 
-#: users/models.py:74
+#: users/models.py:75
 msgid "employee"
 msgstr "сотрудник"
 
-#: users/models.py:75
+#: users/models.py:76
 msgid "empolyees"
 msgstr "сотрудники"
 
-#: users/models.py:101
+#: users/models.py:102
 #, python-format
 msgid ""
 "You have signed on mysite.\n"
@@ -204,7 +208,7 @@ msgstr ""
 "Ваше имя пользователя: %(username)s\n"
 "Ваш пароль: %(password)s\n"
 
-#: users/models.py:103
+#: users/models.py:104
 msgid "Your password on mysite"
 msgstr "Ваш пароль на сайте mysite"
 

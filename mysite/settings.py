@@ -196,3 +196,5 @@ BROKER_PASSWORD = "guest"
 BROKER_VHOST = "/"
 
 MONGODB_DOCUMENT = 'madskillz'
+
+#AUTH_PROFILE_MODULE = 'users.UserProfile'

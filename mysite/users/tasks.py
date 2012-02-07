@@ -5,9 +5,7 @@ from celery.task import task
 from django.core.mail import send_mail
 
 from mysite.users import models
-from mysite.settings import celery_mailing
-
-celery_mailing = make_async_sending.delay
+#from mysite.settings import celery_mailing
 
 def make_sending(const_message_part, changed_user_department, title):
     celery_mailing(const_message_part, changed_user_department, title)
@@ -20,3 +18,5 @@ def make_async_sending(const_message_part, changed_user_department, title):
         header = u'Уважаемый, %s, вы получили это письмо потому, что ' % person['person']
         message = header + const_message_part
         send_mail(title, message, u'dont@reply.ua',[person['email']])
+
+celery_mailing = make_async_sending.delay
