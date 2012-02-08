@@ -95,8 +95,8 @@ def create_test_base():
     empty_department.save()
 
     settings.MONGODB_DOCUMENT = 'test_madskillz'
-    models.mongo_write(employee_of_common.username,[u'1',u'2',u'3'])
-    models.mongo_write(employee_of_headless.username,[u'2',u'2',u'3'])
+    models.mongo_write(employee_of_common.username,[u'1', u'2', u'3'])
+    models.mongo_write(employee_of_headless.username,[u'2', u'2', u'3'])
 
     data_for_new_user_in_empty_department = {
         'username' : u'Newuser',
@@ -138,12 +138,13 @@ def search_response(test, search):
     return response.context['render']
 
 
-TEMPLATE_MESSAGE = ur"""Уважаемый, %s, вы получили это письмо потому, что the following data of User %s has been changed:%s
+TEMPLATE_MESSAGE = ur"""Уважаемый %s, вы получили это письмо потому, что the following data of User %s has been changed:%s
 The following skills were deleted:%s
 Final list of skills is:%s
 """
 def get_change_mail_body(address, changeduser, strlist):
     first_recipient = models.UserProfile.objects.get(myemail=address)
+    # WTF: не читаемо
     return TEMPLATE_MESSAGE % (
         models.form_reference(
             first_recipient.last_name, first_recipient.first_name,
@@ -186,7 +187,8 @@ class TestSite(TestCase):
         result = search_response(self, u'1')
         self.assertEqual(len(result['result']), 1, 'Wrong number of answers found!')
         self.assertEqual(result['result'][0]['skills'], u'1, 2, 3', 'Wrong answer found')
-        self.assertEqual(unicode(result['result'][0]['worker']), u'Ivan Ivanov Ivanovich Position 2 в Common', 'Wrong answer found')
+        self.assertEqual(unicode(result['result'][0]['worker']), u'Ivan Ivanov Ivanovich Position 2 в Common', 
+                         'Wrong answer found')
 
 
     def test_skills_multiple_result(self):
@@ -288,6 +290,6 @@ class TestTelRegExp(TestCase):
         right_phones = [u'1234567', u'+7(123)123-12-12', u'(92557)4563', u'7 (903) 302 20 20', u'+71231212']
         wrong_phones = [u'+ 1234567', u'+7()1231212',u'123-123-123-123',u'127-CALL-US-NOW',u'(123 )123-12-12']
         for phone in right_phones:
-            self.assertRegexpMatches(phone,models.PHONE_NUMBER_REGEXP)
+            self.assertRegexpMatches(phone, models.PHONE_NUMBER_REGEXP)
         for phone in wrong_phones:
-            self.assertNotRegexpMatches(phone,models.PHONE_NUMBER_REGEXP)
+            self.assertNotRegexpMatches(phone, models.PHONE_NUMBER_REGEXP)

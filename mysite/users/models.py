@@ -27,7 +27,7 @@ PHONE_NUMBER_REGEXP = '^'\
                       + '$'
 
 class Department(models.Model):
-    name = models.CharField(max_length = 30, verbose_name=_(u'Name'))
+    name = models.CharField(max_length=30, verbose_name=_(u'Name'))
     head = models.ForeignKey(
         "UserProfile", related_name='head',
         null='true', blank='true', verbose_name=_(u'Head')
@@ -42,7 +42,7 @@ class Department(models.Model):
 
 
 class Position(models.Model):
-    name = models.CharField(max_length = 30, verbose_name=_(u'Position'))
+    name = models.CharField(max_length=30, verbose_name=_(u'Position'))
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -53,16 +53,16 @@ class Position(models.Model):
 
 
 class UserProfile(User):
-    surname = models.CharField(max_length = 30, blank=True, null=True, verbose_name=_(u'Surname'))
+    surname = models.CharField(max_length=30, blank=True, null=True, verbose_name=_(u'Surname'))
     mob_tel = models.CharField(
-        max_length = 30, blank=True, null=True,
+        max_length=30, blank=True, null=True,
         verbose_name=_(u'Mobile telephone'),
-        validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
+        validators=[RegexValidator(PHONE_NUMBER_REGEXP, WRONG_NUMBER)]
     )
     work_tel = models.CharField(
-        max_length = 30, blank=True, null=True,
+        max_length=30, blank=True, null=True,
         verbose_name=_(u'Work telephone'),
-        validators=[RegexValidator(PHONE_NUMBER_REGEXP,WRONG_NUMBER)]
+        validators=[RegexValidator(PHONE_NUMBER_REGEXP, WRONG_NUMBER)]
     )
     myemail = models.EmailField(verbose_name=_(u'E-mail'))
     department = models.ForeignKey(Department, verbose_name=_(u'Department'))
@@ -107,10 +107,12 @@ class UserProfile(User):
 
 
 def get_list_of_addressees_and_names(user_department):
+    # Слишком много "e"
     addressees = get_list_of_addressees(user_department)
+    # WTF: вынеси вычисления до return.
     return [{
         'email': addressee.myemail,
-        'person':form_reference(addressee.last_name,addressee.first_name,addressee.surname,addressee.username)
+        'person': form_reference(addressee.last_name, addressee.first_name, addressee.surname, addressee.username)
     } for addressee in addressees]
 
 
@@ -125,7 +127,7 @@ def get_list_of_addressees(user_department):
 
 
 def form_reference(last_name,first_name,surname,username):
-    if len(last_name)+len(first_name)+len(surname) :
+    if len(last_name) + len(first_name) + len(surname) :
         reference = ((last_name + u' ' + first_name).strip(string.whitespace) + u' ' + surname).strip(string.whitespace)
     else:
         reference = username
