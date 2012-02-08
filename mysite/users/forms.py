@@ -39,10 +39,10 @@ class UserProfileAdminForm(forms.ModelForm):
 
     def send_notifications(self):
         changed_user_reference = self.get_changed_user_reference()
-        const_message_part = self.make_message(changed_user_reference)
+        message_context = self.make_message(changed_user_reference)
 
-        tasks.celery_mailing(
-            const_message_part=const_message_part,
+        tasks.celery_async_mailer.send(
+            message_context=message_context,
             changed_user_department=self.instance.department,
             title=u'Данные сотрудника %s на Mysite были изменены' % changed_user_reference
         )
@@ -67,13 +67,13 @@ class UserProfileAdminForm(forms.ModelForm):
 
     def make_message(self, changed_user):
         changed_data = self.changed_data
-        message = _(u'the following data of User %s has been changed:\n') % changed_user
+        result = {'data':[], 'changed_user':changed_user}
         for field_name in changed_data:
             if not (field_name == u'skills'):
-                message += get_model_field_change(self, field_name)
+                result['data'].append(get_model_field_change(self, field_name))
         if u'skills' in changed_data:
-            message += get_skills_changes(self.instance.skills, self.parse_skills())
-        return message
+            result.update(get_skills_changes(self.instance.skills, self.parse_skills()))
+        return result
 
 
 def parse_string_splitting_by_symbol_and_removing_whitespaces(str,symbol):
@@ -83,30 +83,28 @@ def parse_string_splitting_by_symbol_and_removing_whitespaces(str,symbol):
 def get_skills_changes(skills_before, skills_after):
     new_skills = get_skills_difference(skills_after, skills_before)
     deleted_skills = get_skills_difference(skills_before, skills_after)
-    message = get_deleted_skills_message(deleted_skills)
-    message += get_final_skills_message_with_new(new_skills, skills_after)
-    return message
+    return {'added_skills':new_skills,'deleted_skills':deleted_skills, 'skills':skills_after}
 
 
-def get_deleted_skills_message(deleted_skills):
-    message = u''
-    if len(deleted_skills) > 0:
-        message = _(u'The following skills were deleted:\n')
-        for skill in deleted_skills:
-            message += u'\t' + skill + u'\n'
-    return message
-
-
-def get_final_skills_message_with_new(new_skills, skills_after):
-    message = u''
-    if len(new_skills) > 0:
-        message = _(u'Final list of skills is:\n')
-        for skill in skills_after:
-            message += u'\t' + skill
-            if skill in new_skills:
-                message += _(u' (added!)')
-            message += u'\n'
-    return message
+#def get_deleted_skills_message(deleted_skills):
+#    message = u''
+#    if len(deleted_skills) > 0:
+#        message = _(u'The following skills were deleted:\n')
+#        for skill in deleted_skills:
+#            message += u'\t' + skill + u'\n'
+#    return message
+#
+#
+#def get_final_skills_message_with_new(new_skills, skills_after):
+#    message = u''
+#    if len(new_skills) > 0:
+#        message = _(u'Final list of skills is:\n')
+#        for skill in skills_after:
+#            message += u'\t' + skill
+#            if skill in new_skills:
+#                message += _(u' (added!)')
+#            message += u'\n'
+#    return message
 
 
 def get_skills_difference (skills1, skills2):
@@ -114,9 +112,8 @@ def get_skills_difference (skills1, skills2):
 
 
 def get_model_field_change(form, field_name):
-    return u'\t%s: %s\n' \
-        % (form.instance.get_model_field_by_name(field_name).verbose_name,
-           form.cleaned_data.get(field_name))
+    return {'verbose_name':form.instance.get_model_field_by_name(field_name).verbose_name,
+            'data':form.cleaned_data.get(field_name)}
 
 
 class MongoSearchForm(forms.Form):

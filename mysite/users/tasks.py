@@ -3,20 +3,30 @@
 from celery.task import task
 
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from mysite.users import models
 #from mysite.settings import celery_mailing
 
-def make_sending(const_message_part, changed_user_department, title):
-    celery_mailing(const_message_part, changed_user_department, title)
-
-
 @task()
-def make_async_sending(const_message_part, changed_user_department, title):
+def make_async_sending(message_context, changed_user_department, title):
     to = models.get_list_of_addressees_and_names(changed_user_department)
     for person in to:
-        header = u'Уважаемый %s, вы получили это письмо потому, что ' % person['person']
-        message = header + const_message_part
+        message_context['adressee'] = person['person']
+        message = render_to_string('mail_template',message_context)
         send_mail(title, message, u'dont@reply.ua',[person['email']])
 
-celery_mailing = make_async_sending.delay
+
+class CeleryAsyncMailer():
+    sending_function = make_async_sending.delay
+
+    def send(self,message_context, changed_user_department, title):
+        self.sending_function(message_context, changed_user_department, title)
+
+    def swich_test_mode(self, test):
+        if test:
+            self.sending_function = make_async_sending
+        else:
+            self.sending_function = make_async_sending.delay
+
+celery_async_mailer = CeleryAsyncMailer()

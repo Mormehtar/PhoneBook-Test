@@ -10,6 +10,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.core import mail
+from django.template.loader import render_to_string
 
 import pymongo
 
@@ -118,7 +119,7 @@ def create_test_base():
         'position': position1.id
     }
 
-    tasks.celery_mailing = tasks.make_async_sending
+    tasks.celery_async_mailer.swich_test_mode(test=True)
 
     return {
         'data_for_new_user_in_empty_department':data_for_new_user_in_empty_department,
@@ -130,7 +131,7 @@ def clear_test_base():
     connection.test_db[settings.MONGODB_DOCUMENT].remove()
     connection.end_request()
     settings.MONGODB_DOCUMENT = 'madskillz'
-    tasks.celery_mailing = tasks.make_async_sending.delay
+    tasks.celery_async_mailer.swich_test_mode(test=False)
 
 
 def search_response(test, search):
@@ -138,18 +139,12 @@ def search_response(test, search):
     return response.context['render']
 
 
-TEMPLATE_MESSAGE = ur"""Уважаемый %s, вы получили это письмо потому, что the following data of User %s has been changed:%s
-The following skills were deleted:%s
-Final list of skills is:%s
-"""
-def get_change_mail_body(address, changeduser, strlist):
+def get_change_mail_body(address, message_context):
     first_recipient = models.UserProfile.objects.get(myemail=address)
-    # WTF: не читаемо
-    return TEMPLATE_MESSAGE % (
-        models.form_reference(
-            first_recipient.last_name, first_recipient.first_name,
-            first_recipient.surname, first_recipient.username),
-        changeduser, strlist[0], strlist[1], strlist[2])
+    message_context['adressee'] = models.form_reference(
+        first_recipient.last_name, first_recipient.first_name,
+        first_recipient.surname, first_recipient.username)
+    return render_to_string('mail_template',message_context)
 
 
 def make_changed_form(form,instance,changes):
@@ -248,7 +243,7 @@ class TestForms(TestCase):
                                             u'petr@petrov.com'])
 
 
-    def template_change_mailing_test(self, changeddata, uesrname, adresslist, changestrings):
+    def template_change_mailing_test(self, changeddata, uesrname, adresslist, changes):
         mail.outbox = []
 
         user = models.UserProfile.objects.get(username=uesrname)
@@ -259,11 +254,11 @@ class TestForms(TestCase):
 
         self.check_mailing_list_recipients(adresslist)
 
-        self.assertEqual(mail.outbox[0].body,get_change_mail_body(mail.outbox[0].to[0],
-                                                                  models.form_reference(
-                                                                      user.last_name, user.first_name,
-                                                                      user.surname, user.username),
-                                                                  changestrings))
+        changes.update({'changed_user':models.form_reference(
+            user.last_name, user.first_name,user.surname, user.username)
+        })
+
+        self.assertEqual(mail.outbox[0].body, get_change_mail_body(mail.outbox[0].to[0], changes))
 
 
     def test_employee_in_common_department_change_mailing(self):
@@ -271,7 +266,10 @@ class TestForms(TestCase):
             {'work_tel': u'+7(123)123-45-67', 'skills':u'1\n2\n4'},
             u'Employee1',
             [u'ivan@ivanov.com', u'nameless@head.com', u'petr@petrov.com'],
-            [u'\n\tWork telephone: +7(123)123-45-67', u'\n\t3', u'\n\t1\n\t2\n\t4 (added!)']
+            {'data':[{'verbose_name':'Work telephone','data':'+7(123)123-45-67'}],
+             'added_skills':['4'],
+             'deleted_skills':['3'],
+             'skills':['1','2','4']}
         )
 
 
@@ -280,7 +278,10 @@ class TestForms(TestCase):
             {'work_tel': u'+7(123)123-45-67', 'skills':u'1\n2\n4'},
             u'HeadOfAnother',
             [u'nameless@head.com', u'petr@petrov.com'],
-            [u'\n\tWork telephone: +7(123)123-45-67', u'\n\t3', u'\n\t1 (added!)\n\t2\n\t4 (added!)']
+            {'data':[{'verbose_name':'Work telephone','data':'+7(123)123-45-67'}],
+             'added_skills':['1','4'],
+             'deleted_skills':['3'],
+             'skills':['1','2','4']}
         )
 
 

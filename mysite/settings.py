@@ -62,30 +62,33 @@ MEDIA_URL = '/media/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 #STATIC_ROOT = ''
-STATIC_ROOT = path.join(path.dirname(__file__),'../static')
+#STATIC_ROOT = '/static/' #path.join(path.dirname(__file__),'../static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
+
 ADMIN_MEDIA_PREFIX = '/admin-media/'
 
+ADMIN_TOOLS_MEDIA_URL = '/admin-tools-media/'
+
 # Additional locations of static files
-STATICFILES_DIRS = (
-    '/usr/local/lib/python2.7/dist-packages/admin_tools/media/admin_tools',
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+#STATICFILES_DIRS = (
+##    '/usr/local/lib/python2.7/dist-packages/admin_tools/media/admin_tools',
+#    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+#    # Always use forward slashes, even on Windows.
+#    # Don't forget to use absolute paths, not relative paths.
+#)
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
+#STATICFILES_FINDERS = (
+#    'django.contrib.staticfiles.finders.FileSystemFinder',
+#    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'd!=pv)#=q7f0qquuw93appsp(h9drrfp_1!#=0047=32m2*ug9'

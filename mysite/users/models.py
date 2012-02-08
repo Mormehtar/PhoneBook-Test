@@ -110,10 +110,11 @@ def get_list_of_addressees_and_names(user_department):
     # Слишком много "e"
     addressees = get_list_of_addressees(user_department)
     # WTF: вынеси вычисления до return.
-    return [{
+    list = [{
         'email': addressee.myemail,
         'person': form_reference(addressee.last_name, addressee.first_name, addressee.surname, addressee.username)
     } for addressee in addressees]
+    return list
 
 
 def get_list_of_addressees(user_department):

@@ -1,0 +1,10 @@
+Уважаемый {{ adressee }}, вы получили это письмо потому, что данные пользователя {{ changed_user }} были изменены.
+Были изменены нижеследующие данные:
+{% if data %}{% for line in data %}    {{ line.verbose_name }}: {{ line.data }}
+{% endfor %}{% endif %}{% if deleted_skills %}Были удалены следующие навыки:
+{% for line in deleted_skills %}    {{ line }}
+{% endfor %}{% endif %}{% if added_skills %}Были добавлены следующие навыки:
+{% for line in added_skills %}    {{ line }}
+{% endfor %}{% endif %}{% if deleted_skills or added_skills %}Итоговый список навыков:
+{% for line in skills %}    {{ line }}
+{% endfor %}{% endif %}
