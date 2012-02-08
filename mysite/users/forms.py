@@ -86,27 +86,6 @@ def get_skills_changes(skills_before, skills_after):
     return {'added_skills':new_skills,'deleted_skills':deleted_skills, 'skills':skills_after}
 
 
-#def get_deleted_skills_message(deleted_skills):
-#    message = u''
-#    if len(deleted_skills) > 0:
-#        message = _(u'The following skills were deleted:\n')
-#        for skill in deleted_skills:
-#            message += u'\t' + skill + u'\n'
-#    return message
-#
-#
-#def get_final_skills_message_with_new(new_skills, skills_after):
-#    message = u''
-#    if len(new_skills) > 0:
-#        message = _(u'Final list of skills is:\n')
-#        for skill in skills_after:
-#            message += u'\t' + skill
-#            if skill in new_skills:
-#                message += _(u' (added!)')
-#            message += u'\n'
-#    return message
-
-
 def get_skills_difference (skills1, skills2):
     return set(skills1) - set(skills2)
 

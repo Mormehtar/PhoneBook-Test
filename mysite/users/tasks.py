@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from mysite.users import models
-#from mysite.settings import celery_mailing
+
 
 @task()
 def make_async_sending(message_context, changed_user_department, title):
